@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lily & Rue's Chores Chart</title>
+    <title>Lily & Rue's Weekly Chart</title>
     <style>
         * {
             margin: 0;
@@ -12,382 +12,356 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: all 0.5s ease;
+            font-family: 'Arial', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 25%, #feca57 50%, #48dbfb 75%, #0abde3 100%);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Monday - Banksy street art graffiti style */
-        body.day-1 {
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: 
-                linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(40,40,40,0.7) 100%),
-                repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,0,100,0.1) 20px, rgba(255,0,100,0.1) 40px),
-                linear-gradient(to bottom, #1a1a1a 0%, #2d2d2d 100%);
-            color: #f0f0f0;
-        }
-
-        /* Tuesday - Monet water lilies impressionist */
-        body.day-2 {
-            background:
-                radial-gradient(ellipse at 30% 40%, rgba(147,197,253,0.3), transparent 50%),
-                radial-gradient(ellipse at 70% 60%, rgba(196,181,253,0.3), transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(134,239,172,0.2), transparent 40%),
-                linear-gradient(135deg, #7dd3fc 0%, #a78bfa 50%, #86efac 100%);
-            color: #1a1a1a;
-        }
-
-        /* Wednesday - Picasso cubism geometric */
-        body.day-3 {
-            background:
-                conic-gradient(from 45deg at 20% 30%, #fb923c 0deg, #fb923c 90deg, transparent 90deg, transparent 180deg, #3b82f6 180deg, #3b82f6 270deg, transparent 270deg),
-                conic-gradient(from 135deg at 80% 70%, #ec4899 0deg, #ec4899 90deg, transparent 90deg, transparent 180deg, #8b5cf6 180deg, #8b5cf6 270deg, transparent 270deg),
-                linear-gradient(45deg, #fb923c 0%, #3b82f6 50%, #ec4899 100%);
-            color: #1a1a1a;
-        }
-
-        /* Thursday - Street art bold colors */
-        body.day-4 {
-            background:
-                repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.1) 60px, rgba(255,255,255,0.1) 120px),
-                repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.1) 120px),
-                linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
-            color: #1a1a1a;
-        }
-
-        /* Friday - Monet sunrise palette */
-        body.day-5 {
-            background:
-                radial-gradient(circle at 80% 20%, rgba(251,191,36,0.4), transparent 30%),
-                radial-gradient(circle at 60% 30%, rgba(251,146,60,0.3), transparent 25%),
-                radial-gradient(circle at 70% 25%, rgba(252,165,165,0.3), transparent 20%),
-                linear-gradient(to bottom, #fbbf24 0%, #fb923c 30%, #fca5a5 60%, #7dd3fc 100%);
-            color: #1a1a1a;
-        }
-
-        /* Saturday - Banksy stencil art */
-        body.day-6 {
-            background:
-                repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.05) 30deg, transparent 60deg),
-                linear-gradient(135deg, #18181b 0%, #3f3f46 50%, #52525b 100%);
-            color: #f0f0f0;
-        }
-
-        /* Sunday - Street art vibrant splatter */
-        body.day-0 {
-            background:
-                radial-gradient(circle at 20% 30%, rgba(236,72,153,0.3), transparent 20%),
-                radial-gradient(circle at 80% 40%, rgba(59,130,246,0.3), transparent 25%),
-                radial-gradient(circle at 50% 70%, rgba(34,197,94,0.3), transparent 20%),
-                radial-gradient(circle at 30% 80%, rgba(251,146,60,0.3), transparent 18%),
-                radial-gradient(circle at 70% 85%, rgba(168,85,247,0.3), transparent 22%),
-                linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            color: #f0f0f0;
+                repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255,255,255,.05) 50px, rgba(255,255,255,.05) 100px);
+            pointer-events: none;
         }
 
         .container {
-            max-width: 100%;
-            padding: 12px;
-        }
-
-        .header {
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        body.day-1 .header,
-        body.day-6 .header,
-        body.day-0 .header {
-            background: rgba(40,40,40,0.95);
-            color: #f0f0f0;
+            flex-direction: column;
+            padding: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
-            font-size: 2.2rem;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            color: white;
+            text-shadow: 3px 3px 0px #c44569, 6px 6px 0px rgba(0,0,0,0.2);
             font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .star-display {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #fbbf24;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
             justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .tab-btn {
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px);
-            color: #1a1a1a;
-            border: 3px solid transparent;
-            padding: 12px 35px;
+            background: linear-gradient(135deg, white, #f0f0f0);
+            border: 3px solid #c44569;
+            padding: 10px 30px;
             font-size: 1.5rem;
-            font-weight: 900;
-            border-radius: 10px;
+            border-radius: 0;
             cursor: pointer;
+            font-weight: 900;
+            color: #c44569;
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        body.day-1 .tab-btn,
-        body.day-6 .tab-btn,
-        body.day-0 .tab-btn {
-            background: rgba(60,60,60,0.9);
-            color: #f0f0f0;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+            position: relative;
         }
 
         .tab-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
         }
 
         .tab-btn.active {
-            border-color: #ef4444;
-            background: rgba(239,68,68,0.9);
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
             color: white;
+            border-color: white;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
         }
 
         .tab-content {
             display: none;
+            flex: 1;
+            overflow: hidden;
         }
 
         .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
-        .day-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        /* CHORES TAB */
+        .single-child-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        body.day-1 .day-section,
-        body.day-6 .day-section,
-        body.day-0 .day-section {
-            background: rgba(40,40,40,0.95);
-            color: #f0f0f0;
+        .chores-grid {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .child-section {
+            background: white;
+            border-radius: 0;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 12px;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.2);
+            flex: 1;
+            border: 4px solid #c44569;
+            position: relative;
+        }
+
+        .child-section::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(135deg, #ff6b9d, #feca57, #48dbfb);
+            z-index: -1;
+            border-radius: 0;
+        }
+
+        .child-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .child-name {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .star-count {
+            font-size: 2.2rem;
+            color: #ffd700;
+        }
+
+        .rewards-mini {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            padding: 12px;
+            border-radius: 0;
+            font-size: 0.9rem;
+            border: 3px solid #c44569;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .week-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-col {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 0;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            border: 3px solid #48dbfb;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
         }
 
         .day-header {
-            font-size: 1.8rem;
+            font-size: 1rem;
             font-weight: 900;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 3px solid #ef4444;
+            background: linear-gradient(135deg, #48dbfb, #0abde3);
+            color: white;
+            text-align: center;
+            margin: -6px -6px 6px -6px;
+            padding: 6px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .time-section {
-            margin-bottom: 15px;
+            margin-bottom: 6px;
         }
 
         .time-label {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #ef4444;
-            margin-bottom: 8px;
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: #c44569;
+            margin-bottom: 3px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .tasks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 8px;
-        }
-
-        .task-item {
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-            padding: 10px;
-            border-radius: 10px;
+        .task {
+            background: white;
+            padding: 5px 8px 5px 28px;
+            margin-bottom: 3px;
+            border-radius: 0;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1.1rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 2px solid transparent;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            border: 2px solid #dfe6e9;
+            position: relative;
+            font-weight: 600;
+            line-height: 1.2;
         }
 
-        body.day-1 .task-item,
-        body.day-6 .task-item,
-        body.day-0 .task-item {
-            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
-            color: #f0f0f0;
+        .task::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
         }
 
-        .task-item:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border-color: #ef4444;
+        .task:hover {
+            border-color: #c44569;
+            transform: translateX(3px);
+            box-shadow: 3px 3px 0px rgba(196, 69, 105, 0.3);
         }
 
-        .task-item.completed {
-            background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+        .task.completed {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            border-color: #00b894;
             text-decoration: line-through;
             opacity: 0.7;
+            color: white;
         }
 
-        body.day-1 .task-item.completed,
-        body.day-6 .task-item.completed,
-        body.day-0 .task-item.completed {
-            background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+        .task .check {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
         }
 
-        .task-icon {
-            font-size: 1.3rem;
-            flex-shrink: 0;
+        /* CALENDAR TAB */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            height: 100%;
         }
 
-        .task-check {
-            margin-left: auto;
-            font-size: 1.2rem;
-            color: #22c55e;
-        }
-
-        .rewards-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        body.day-1 .rewards-section,
-        body.day-6 .rewards-section,
-        body.day-0 .rewards-section {
-            background: rgba(40,40,40,0.95);
-            color: #f0f0f0;
+        .calendar-box {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow-y: auto;
         }
 
         .section-title {
-            font-size: 1.8rem;
-            font-weight: 900;
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .calendar-event {
+            background: #e7f3ff;
+            padding: 15px;
             margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #ef4444;
-        }
-
-        .rewards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px;
-        }
-
-        .reward-item {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 12px;
+            border-left: 5px solid #2196F3;
             font-size: 1.2rem;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 2px solid #fbbf24;
-        }
-
-        body.day-1 .reward-item,
-        body.day-6 .reward-item,
-        body.day-0 .reward-item {
-            background: linear-gradient(135deg, #713f12 0%, #854d0e 100%);
-            border-color: #fbbf24;
-            color: #fef3c7;
-        }
-
-        .reward-cost {
-            font-size: 1.4rem;
-            color: #f59e0b;
-            font-weight: 900;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 10px;
-        }
-
-        .event-item {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            padding: 12px;
-            border-radius: 10px;
-            border-left: 5px solid #3b82f6;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
 
-        body.day-1 .event-item,
-        body.day-6 .event-item,
-        body.day-0 .event-item {
-            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
-            color: #dbeafe;
-            border-left-color: #60a5fa;
+        .calendar-event:hover {
+            background: #cfe8ff;
+            transform: translateX(5px);
         }
 
         .event-date {
-            font-weight: 900;
-            color: #3b82f6;
-            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2196F3;
             margin-bottom: 5px;
         }
 
-        body.day-1 .event-date,
-        body.day-6 .event-date,
-        body.day-0 .event-date {
-            color: #93c5fd;
+        .google-sync {
+            background: #4285f4;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.1rem;
         }
 
-        .event-title {
-            font-size: 1.3rem;
-            font-weight: 700;
+        .google-sync button {
+            background: white;
+            color: #4285f4;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .google-sync button:hover {
+            background: #f0f0f0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+            border: 3px solid #00b894;
+            padding: 8px 20px;
+            font-size: 1rem;
+            border-radius: 0;
+            cursor: pointer;
+            margin: 3px;
+            font-weight: 900;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-color: #0984e3;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-color: #fdcb6e;
+            color: #2d3436;
         }
 
         .controls {
             text-align: center;
-            padding: 15px;
-        }
-
-        .btn {
-            background: rgba(239,68,68,0.9);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.3rem;
-            font-weight: 900;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 5px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            margin-top: 8px;
         }
 
         .modal {
@@ -397,137 +371,123 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
 
         .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 15px;
+            border-radius: 20px;
             max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            width: 90%;
         }
 
         .modal h2 {
-            font-size: 2rem;
-            font-weight: 900;
             margin-bottom: 20px;
-            color: #ef4444;
-            text-transform: uppercase;
+            color: #667eea;
         }
 
-        .modal input,
-        .modal textarea {
+        .modal input, .modal textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 12px;
             font-size: 1.2rem;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #ddd;
             border-radius: 8px;
-            font-family: inherit;
-        }
-
-        .modal input:focus,
-        .modal textarea:focus {
-            outline: none;
-            border-color: #ef4444;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="day-1">
+<body>
     <div class="container">
-        <div class="header">
-            <h1>🎨 LILY & RUE'S CHORES 🎨</h1>
-            <div class="star-display" id="headerStars">⭐ 0</div>
-        </div>
+        <h1>🌸 Lily & Rue's Weekly Chart 🌸</h1>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('lily')">LILY</button>
-            <button class="tab-btn" onclick="switchTab('rue')">RUE</button>
-            <button class="tab-btn" onclick="switchTab('calendar')">📅 CALENDAR</button>
+            <button class="tab-btn active" onclick="switchTab('lily')">🌺 Lily</button>
+            <button class="tab-btn" onclick="switchTab('rue')">🌸 Rue</button>
+            <button class="tab-btn" onclick="switchTab('calendar')">📅 Calendar</button>
         </div>
 
-        <div id="lily-content" class="tab-content active">
-            <div id="lilyChores"></div>
-            <div class="rewards-section">
-                <div class="section-title">🎁 LILY'S REWARDS</div>
-                <div class="rewards-grid" id="lilyRewards"></div>
+        <!-- LILY'S TAB -->
+        <div id="lilyTab" class="tab-content active">
+            <div class="single-child-view">
+                <div class="child-section">
+                    <div class="child-header">
+                        <div class="child-name">Lily</div>
+                        <div class="star-count"><span id="lilyStars">0</span> ⭐</div>
+                        <div class="rewards-mini" id="lilyRewards"></div>
+                    </div>
+                    <div class="week-container" id="lilyWeek"></div>
+                </div>
             </div>
-        </div>
 
-        <div id="rue-content" class="tab-content">
-            <div id="rueChores"></div>
-            <div class="rewards-section">
-                <div class="section-title">🎁 RUE'S REWARDS</div>
-                <div class="rewards-grid" id="rueRewards"></div>
-            </div>
-        </div>
-
-        <div id="calendar-content" class="tab-content">
-            <div class="rewards-section">
-                <div class="section-title">📅 FAMILY CALENDAR</div>
-                <div class="calendar-grid" id="calendarEvents"></div>
-            </div>
             <div class="controls">
-                <button class="btn" onclick="openEventModal()">➕ ADD EVENT</button>
+                <button class="btn" onclick="openTaskModal('lily')">✏️ Edit Lily's Tasks</button>
+                <button class="btn btn-secondary" onclick="resetWeek()">🔄 Reset Week</button>
+                <button class="btn btn-secondary" onclick="saveData()">💾 Save</button>
             </div>
         </div>
 
-        <div class="controls">
-            <button class="btn" onclick="openEditModal()">✏️ EDIT CHORES</button>
-            <button class="btn" onclick="openRewardModal()">🎁 EDIT REWARDS</button>
-            <button class="btn" onclick="resetWeek()">🔄 RESET WEEK</button>
+        <!-- RUE'S TAB -->
+        <div id="rueTab" class="tab-content">
+            <div class="single-child-view">
+                <div class="child-section">
+                    <div class="child-header">
+                        <div class="child-name">Rue</div>
+                        <div class="star-count"><span id="rueStars">0</span> ⭐</div>
+                        <div class="rewards-mini" id="rueRewards"></div>
+                    </div>
+                    <div class="week-container" id="rueWeek"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="openTaskModal('rue')">✏️ Edit Rue's Tasks</button>
+                <button class="btn btn-secondary" onclick="resetWeek()">🔄 Reset Week</button>
+                <button class="btn btn-secondary" onclick="saveData()">💾 Save</button>
+            </div>
+        </div>
+
+        <!-- CALENDAR TAB -->
+        <div id="calendarTab" class="tab-content">
+            <div class="calendar-container">
+                <div class="calendar-box">
+                    <div class="section-title">📅 Family Events</div>
+                    <div id="calendarEvents"></div>
+                    <button class="btn btn-blue" style="width: 100%; margin-top: 15px;" onclick="openEventModal()">➕ Add Event</button>
+                </div>
+
+                <div class="calendar-box">
+                    <div class="section-title">Google Calendar Sync</div>
+                    <div class="google-sync">
+                        <div>🔗 Connect your Google Calendar to see family events here automatically!</div>
+                        <button onclick="connectGoogleCalendar()">Connect Google Calendar</button>
+                        <div id="syncStatus" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                        <h3 style="margin-bottom: 10px;">How it works:</h3>
+                        <ol style="font-size: 1rem; line-height: 1.6;">
+                            <li>Click "Connect Google Calendar"</li>
+                            <li>Sign in to your Google account</li>
+                            <li>Grant permission to view your calendar</li>
+                            <li>Events will sync automatically!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Edit Chores Modal -->
-    <div id="editModal" class="modal">
+    <!-- Edit Task Modal -->
+    <div id="taskModal" class="modal">
         <div class="modal-content">
-            <h2>Edit <span id="editChildName"></span>'s Chores</h2>
-            <p style="margin-bottom: 15px; font-weight: 600;">One task per line. Format: Task name ⭐stars</p>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKDAY MORNING:</label>
-            <textarea id="weekdayMorning" rows="8"></textarea>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKDAY AFTERNOON:</label>
-            <textarea id="weekdayAfternoon" rows="5"></textarea>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKEND MORNING:</label>
-            <textarea id="weekendMorning" rows="6"></textarea>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKEND AFTERNOON:</label>
-            <textarea id="weekendAfternoon" rows="5"></textarea>
-            
-            <button class="btn" onclick="saveChoreChanges()">SAVE</button>
-            <button class="btn" onclick="closeModal('editModal')" style="background: #6b7280;">CANCEL</button>
-        </div>
-    </div>
-
-    <!-- Edit Rewards Modal -->
-    <div id="rewardModal" class="modal">
-        <div class="modal-content">
-            <h2>Edit Rewards</h2>
-            <label style="font-weight: 700; display: block; margin-bottom: 10px;">LILY'S REWARDS (format: Reward ⭐cost):</label>
-            <textarea id="lilyRewardsInput" rows="6"></textarea>
-            
-            <label style="font-weight: 700; display: block; margin: 15px 0 10px;">RUE'S REWARDS:</label>
-            <textarea id="rueRewardsInput" rows="6"></textarea>
-            
-            <button class="btn" onclick="saveRewardChanges()">SAVE</button>
-            <button class="btn" onclick="closeModal('rewardModal')" style="background: #6b7280;">CANCEL</button>
+            <h2 id="taskModalTitle">Edit Tasks</h2>
+            <div id="taskEditContent"></div>
+            <button class="btn" onclick="saveTaskChanges()">Save Changes</button>
+            <button class="btn btn-secondary" onclick="closeModal('taskModal')">Cancel</button>
         </div>
     </div>
 
@@ -538,377 +498,418 @@
             <input type="date" id="eventDate">
             <input type="text" id="eventTitle" placeholder="Event name">
             <input type="text" id="eventDetails" placeholder="Time/Details (optional)">
-            <button class="btn" onclick="saveEvent()">ADD EVENT</button>
-            <button class="btn" onclick="closeModal('eventModal')" style="background: #6b7280;">CANCEL</button>
+            <button class="btn btn-blue" onclick="saveEvent()">Add Event</button>
+            <button class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
         </div>
     </div>
 
     <script>
-        const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        const weekendDays = ['Saturday', 'Sunday'];
-        let currentTab = 'lily';
-        let editingChild = 'lily';
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-        const taskIcons = {
-            'toilet': '🚽', 'eat': '🍽️', 'breakfast': '🥐', 'brush teeth': '🪥', 
-            'teeth': '🪥', 'dressed': '👕', 'get dressed': '👕', 'hair': '💇',
-            'brush hair': '💇', 'feed': '🐾', 'animals': '🐾', 'lunchbox': '🍱',
-            'pack lunchbox': '🍱', 'bag': '🎒', 'pack bag': '🎒', 'unpack bag': '🎒',
-            'unpack': '📦', 'tidy': '🧹', 'room': '🛏️', 'tidy room': '🧹',
-            'dishwasher': '🍽️', 'dishes': '🍽️'
-        };
-
-        function getIcon(taskName) {
-            const lower = taskName.toLowerCase();
-            for (let key in taskIcons) {
-                if (lower.includes(key)) return taskIcons[key];
-            }
-            return '✨';
-        }
-
-        let data = {
+        let familyData = {
             lily: {
                 stars: 0,
-                weekdayMorning: [
-                    'Eat breakfast ⭐1', 'Brush teeth ⭐1', 'Get dressed ⭐1',
-                    'Brush hair ⭐1', 'Feed animals ⭐2', 'Pack lunchbox ⭐1',
-                    'Pack bag ⭐1'
-                ],
-                weekdayAfternoon: [
-                    'Unpack bag ⭐1', 'Tidy room ⭐2', 'Unpack dishwasher ⭐2',
-                    'Feed animals ⭐2'
-                ],
-                weekendMorning: [
-                    'Eat breakfast ⭐1', 'Brush teeth ⭐1', 'Get dressed ⭐1',
-                    'Brush hair ⭐1', 'Feed animals ⭐2'
-                ],
-                weekendAfternoon: [
-                    'Tidy room ⭐2', 'Unpack dishwasher ⭐2', 'Feed animals ⭐2'
-                ],
-                completed: {
-                    Monday: { morning: [], afternoon: [] },
-                    Tuesday: { morning: [], afternoon: [] },
-                    Wednesday: { morning: [], afternoon: [] },
-                    Thursday: { morning: [], afternoon: [] },
-                    Friday: { morning: [], afternoon: [] },
-                    Saturday: { morning: [], afternoon: [] },
-                    Sunday: { morning: [], afternoon: [] }
+                tasks: {
+                    morning: [
+                        { name: "Make bed", stars: 1 },
+                        { name: "Brush teeth", stars: 1 },
+                        { name: "Get dressed", stars: 1 }
+                    ],
+                    weekday: [],
+                    afternoon: [
+                        { name: "Homework", stars: 2 },
+                        { name: "Tidy room", stars: 2 }
+                    ]
                 },
+                weeklyTasks: {},
                 rewards: [
-                    '30 min screen time ⭐5',
-                    'Choose dinner ⭐10',
-                    'Movie pick ⭐15',
-                    'Special treat ⭐20'
+                    { name: "30 min screen time", cost: 5 },
+                    { name: "Choose dinner", cost: 10 },
+                    { name: "Movie pick", cost: 15 }
                 ]
             },
             rue: {
                 stars: 0,
-                weekdayMorning: [
-                    'Toilet ⭐1', 'Eat breakfast ⭐1', 'Brush teeth ⭐1',
-                    'Get dressed ⭐1', 'Brush hair ⭐1', 'Feed animals ⭐2',
-                    'Pack lunchbox ⭐1', 'Pack bag ⭐1'
-                ],
-                weekdayAfternoon: [
-                    'Unpack bag ⭐1', 'Tidy room ⭐2', 'Unpack dishwasher ⭐2',
-                    'Feed animals ⭐2'
-                ],
-                weekendMorning: [
-                    'Toilet ⭐1', 'Eat breakfast ⭐1', 'Brush teeth ⭐1',
-                    'Get dressed ⭐1', 'Brush hair ⭐1', 'Feed animals ⭐2'
-                ],
-                weekendAfternoon: [
-                    'Tidy room ⭐2', 'Unpack dishwasher ⭐2', 'Feed animals ⭐2'
-                ],
-                completed: {
-                    Monday: { morning: [], afternoon: [] },
-                    Tuesday: { morning: [], afternoon: [] },
-                    Wednesday: { morning: [], afternoon: [] },
-                    Thursday: { morning: [], afternoon: [] },
-                    Friday: { morning: [], afternoon: [] },
-                    Saturday: { morning: [], afternoon: [] },
-                    Sunday: { morning: [], afternoon: [] }
+                tasks: {
+                    morning: [
+                        { name: "Toilet", stars: 1 },
+                        { name: "Eat breakfast", stars: 1 },
+                        { name: "Brush teeth", stars: 1 },
+                        { name: "Get dressed", stars: 1 },
+                        { name: "Brush hair", stars: 1 },
+                        { name: "Feed animals", stars: 2 }
+                    ],
+                    weekday: [
+                        { name: "Pack lunchbox", stars: 1 },
+                        { name: "Pack bag", stars: 1 }
+                    ],
+                    afternoon: [
+                        { name: "Tidy room", stars: 2 },
+                        { name: "Unpack dishwasher", stars: 2 }
+                    ]
                 },
+                weeklyTasks: {},
                 rewards: [
-                    'Extra story ⭐5',
-                    'Park trip ⭐10',
-                    'Ice cream ⭐12',
-                    'Special outing ⭐20'
+                    { name: "Extra story", cost: 5 },
+                    { name: "Park trip", cost: 10 },
+                    { name: "Special treat", cost: 15 }
                 ]
             },
-            events: []
+            events: [
+                { date: "2026-02-20", title: "Doctor appointment", details: "10:00 AM" }
+            ],
+            googleCalendarConnected: false
         };
 
-        function getDayOfWeek() {
-            return new Date().getDay();
-        }
-
-        function updateBackground() {
-            document.body.className = 'day-' + getDayOfWeek();
-        }
-
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tab + '-content').classList.add('active');
-            
-            if (tab !== 'calendar') {
-                updateHeaderStars();
-            }
-        }
-
-        function updateHeaderStars() {
-            const child = data[currentTab];
-            document.getElementById('headerStars').textContent = `⭐ ${child.stars}`;
-        }
-
-        function parseTask(taskStr) {
-            const match = taskStr.match(/(.+?)\s*⭐(\d+)/);
-            if (match) {
-                return { name: match[1].trim(), stars: parseInt(match[2]) };
-            }
-            return { name: taskStr.trim(), stars: 1 };
-        }
-
-        function renderChild(childName) {
-            const child = data[childName];
-            const container = document.getElementById(childName + 'Chores');
-            
-            let html = '';
-            const allDays = [...weekdays, ...weekendDays];
-            
-            allDays.forEach(day => {
-                const isWeekend = weekendDays.includes(day);
-                const morningTasks = isWeekend ? child.weekendMorning : child.weekdayMorning;
-                const afternoonTasks = isWeekend ? child.weekendAfternoon : child.weekdayAfternoon;
+        // Initialize weekly tasks
+        function initializeWeeklyTasks() {
+            days.forEach((day, index) => {
+                const isWeekday = index < 5; // Mon-Fri
                 
-                html += `<div class="day-section">
-                    <div class="day-header">${day}</div>
-                    <div class="time-section">
-                        <div class="time-label">☀️ MORNING</div>
-                        <div class="tasks-grid">`;
-                
-                morningTasks.forEach((taskStr, idx) => {
-                    const task = parseTask(taskStr);
-                    const isCompleted = child.completed[day].morning.includes(idx);
-                    html += `
-                        <div class="task-item ${isCompleted ? 'completed' : ''}" 
-                             onclick="toggleTask('${childName}', '${day}', 'morning', ${idx})">
-                            <span class="task-icon">${getIcon(task.name)}</span>
-                            <span>${task.name}</span>
-                            ${isCompleted ? '<span class="task-check">✓</span>' : ''}
-                        </div>`;
-                });
-                
-                html += `</div></div><div class="time-section">
-                    <div class="time-label">🌙 AFTERNOON</div>
-                    <div class="tasks-grid">`;
-                
-                afternoonTasks.forEach((taskStr, idx) => {
-                    const task = parseTask(taskStr);
-                    const isCompleted = child.completed[day].afternoon.includes(idx);
-                    html += `
-                        <div class="task-item ${isCompleted ? 'completed' : ''}" 
-                             onclick="toggleTask('${childName}', '${day}', 'afternoon', ${idx})">
-                            <span class="task-icon">${getIcon(task.name)}</span>
-                            <span>${task.name}</span>
-                            ${isCompleted ? '<span class="task-check">✓</span>' : ''}
-                        </div>`;
-                });
-                
-                html += `</div></div></div>`;
+                // Lily
+                const lilyMorningCount = familyData.lily.tasks.morning.length;
+                const lilyAfternoonCount = familyData.lily.tasks.afternoon.length;
+                familyData.lily.weeklyTasks[day] = {
+                    morning: new Array(lilyMorningCount).fill(false),
+                    afternoon: new Array(lilyAfternoonCount).fill(false)
+                };
+
+                // Rue
+                const rueMorningCount = familyData.rue.tasks.morning.length;
+                const rueWeekdayCount = familyData.rue.tasks.weekday.length;
+                const rueAfternoonCount = familyData.rue.tasks.afternoon.length;
+                familyData.rue.weeklyTasks[day] = {
+                    morning: new Array(rueMorningCount).fill(false),
+                    weekday: isWeekday ? new Array(rueWeekdayCount).fill(false) : [],
+                    afternoon: new Array(rueAfternoonCount).fill(false)
+                };
             });
-            
-            container.innerHTML = html;
         }
 
-        function toggleTask(childName, day, timeOfDay, taskIdx) {
-            const child = data[childName];
-            const completed = child.completed[day][timeOfDay];
-            const taskList = weekendDays.includes(day) ? 
-                (timeOfDay === 'morning' ? child.weekendMorning : child.weekendAfternoon) :
-                (timeOfDay === 'morning' ? child.weekdayMorning : child.weekdayAfternoon);
-            
-            const task = parseTask(taskList[taskIdx]);
-            const idx = completed.indexOf(taskIdx);
-            
-            if (idx > -1) {
-                completed.splice(idx, 1);
-                child.stars -= task.stars;
+        function loadData() {
+            const saved = localStorage.getItem('lilyRueChartData');
+            if (saved) {
+                const loadedData = JSON.parse(saved);
+                // Merge with default structure to handle updates
+                familyData = { ...familyData, ...loadedData };
             } else {
-                completed.push(taskIdx);
-                child.stars += task.stars;
+                initializeWeeklyTasks();
             }
-            
-            save();
-            renderChild(childName);
-            renderRewards(childName);
-            updateHeaderStars();
         }
 
-        function renderRewards(childName) {
-            const child = data[childName];
-            const container = document.getElementById(childName + 'Rewards');
+        function saveData() {
+            localStorage.setItem('lilyRueChartData', JSON.stringify(familyData));
+            alert('✅ Progress saved!');
+        }
+
+        function autoSave() {
+            localStorage.setItem('lilyRueChartData', JSON.stringify(familyData));
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            let html = '';
-            child.rewards.forEach(rewardStr => {
-                const match = rewardStr.match(/(.+?)\s*⭐(\d+)/);
-                const name = match ? match[1].trim() : rewardStr;
-                const cost = match ? match[2] : '5';
-                html += `
-                    <div class="reward-item">
-                        <span>${name}</span>
-                        <span class="reward-cost">⭐${cost}</span>
-                    </div>`;
+            if (tabName === 'lily') {
+                document.getElementById('lilyTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            } else if (tabName === 'rue') {
+                document.getElementById('rueTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            } else {
+                document.getElementById('calendarTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            }
+        }
+
+        function renderChores() {
+            renderChild('lily', 'lilyWeek', 'lilyStars', 'lilyRewards');
+            renderChild('rue', 'rueWeek', 'rueStars', 'rueRewards');
+        }
+
+        function getTaskIcon(taskName) {
+            const name = taskName.toLowerCase();
+            
+            // Morning tasks
+            if (name.includes('toilet')) return '🚽';
+            if (name.includes('breakfast') || name.includes('eat')) return '🍳';
+            if (name.includes('brush teeth') || name.includes('teeth')) return '🪥';
+            if (name.includes('dressed') || name.includes('clothes')) return '👕';
+            if (name.includes('brush hair') || name.includes('hair')) return '💇';
+            if (name.includes('bed')) return '🛏️';
+            
+            // Animal/pet tasks
+            if (name.includes('feed animals') || name.includes('feed pet')) return '🐾';
+            if (name.includes('dog')) return '🐕';
+            if (name.includes('cat')) return '🐱';
+            
+            // School tasks
+            if (name.includes('lunchbox') || name.includes('lunch')) return '🍱';
+            if (name.includes('bag') || name.includes('backpack')) return '🎒';
+            if (name.includes('homework')) return '📚';
+            
+            // Chores
+            if (name.includes('tidy') || name.includes('clean room')) return '🧹';
+            if (name.includes('dishwasher') || name.includes('dishes')) return '🍽️';
+            if (name.includes('trash') || name.includes('garbage')) return '🗑️';
+            if (name.includes('laundry')) return '👔';
+            if (name.includes('vacuum')) return '🧹';
+            
+            // Default
+            return '⭐';
+        }
+
+        function renderChild(childName, weekContainerId, starsId, rewardsId) {
+            const child = familyData[childName];
+            const container = document.getElementById(weekContainerId);
+            container.innerHTML = '';
+
+            // Update stars
+            document.getElementById(starsId).textContent = child.stars;
+
+            // Update rewards mini
+            const rewardsHTML = child.rewards.map(r => `<div>${r.name} ${r.cost}⭐</div>`).join('');
+            document.getElementById(rewardsId).innerHTML = rewardsHTML;
+
+            // Render week
+            days.forEach((day, dayIndex) => {
+                const dayCol = document.createElement('div');
+                dayCol.className = 'day-col';
+                
+                let tasksHTML = `<div class="day-header">${day}</div>`;
+
+                // Morning tasks
+                tasksHTML += '<div class="time-section"><div class="time-label">Morning</div>';
+                child.tasks.morning.forEach((task, taskIndex) => {
+                    const completed = child.weeklyTasks[day].morning[taskIndex];
+                    const icon = getTaskIcon(task.name);
+                    tasksHTML += `
+                        <div class="task ${completed ? 'completed' : ''}" 
+                             data-icon="${icon}"
+                             onclick="toggleTask('${childName}', '${day}', 'morning', ${taskIndex})">
+                            ${task.name}
+                            <span class="check">${completed ? '✓' : ''}</span>
+                        </div>`;
+                });
+                tasksHTML += '</div>';
+
+                // Weekday tasks (Rue only, Mon-Fri)
+                if (childName === 'rue' && dayIndex < 5) {
+                    tasksHTML += '<div class="time-section"><div class="time-label">School</div>';
+                    child.tasks.weekday.forEach((task, taskIndex) => {
+                        const completed = child.weeklyTasks[day].weekday[taskIndex];
+                        const icon = getTaskIcon(task.name);
+                        tasksHTML += `
+                            <div class="task ${completed ? 'completed' : ''}" 
+                                 data-icon="${icon}"
+                                 onclick="toggleTask('${childName}', '${day}', 'weekday', ${taskIndex})">
+                                ${task.name}
+                                <span class="check">${completed ? '✓' : ''}</span>
+                            </div>`;
+                    });
+                    tasksHTML += '</div>';
+                }
+
+                // Afternoon tasks
+                tasksHTML += '<div class="time-section"><div class="time-label">Afternoon</div>';
+                child.tasks.afternoon.forEach((task, taskIndex) => {
+                    const completed = child.weeklyTasks[day].afternoon[taskIndex];
+                    const icon = getTaskIcon(task.name);
+                    tasksHTML += `
+                        <div class="task ${completed ? 'completed' : ''}" 
+                             data-icon="${icon}"
+                             onclick="toggleTask('${childName}', '${day}', 'afternoon', ${taskIndex})">
+                            ${task.name}
+                            <span class="check">${completed ? '✓' : ''}</span>
+                        </div>`;
+                });
+                tasksHTML += '</div>';
+
+                dayCol.innerHTML = tasksHTML;
+                container.appendChild(dayCol);
             });
+        }
+
+        function toggleTask(childName, day, timeOfDay, taskIndex) {
+            const child = familyData[childName];
+            const task = child.tasks[timeOfDay][taskIndex];
+            const currentStatus = child.weeklyTasks[day][timeOfDay][taskIndex];
             
-            container.innerHTML = html;
+            child.weeklyTasks[day][timeOfDay][taskIndex] = !currentStatus;
+            
+            if (!currentStatus) {
+                child.stars += task.stars;
+            } else {
+                child.stars -= task.stars;
+            }
+            
+            autoSave();
+            renderChores();
         }
 
         function renderCalendar() {
             const container = document.getElementById('calendarEvents');
-            
-            if (data.events.length === 0) {
-                container.innerHTML = '<p style="text-align: center; padding: 30px; font-size: 1.3rem;">No events scheduled</p>';
+            container.innerHTML = '';
+
+            if (familyData.events.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; font-size: 1.2rem;">No events scheduled</p>';
                 return;
             }
+
+            familyData.events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            familyData.events.forEach((event, index) => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'calendar-event';
+                eventDiv.onclick = () => deleteEvent(index);
+                
+                const date = new Date(event.date + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                
+                eventDiv.innerHTML = `
+                    <div class="event-date">${formattedDate}</div>
+                    <div>${event.title}</div>
+                    ${event.details ? `<div style="font-size: 1rem; opacity: 0.8;">${event.details}</div>` : ''}
+                `;
+                
+                container.appendChild(eventDiv);
+            });
+        }
+
+        let currentEditingChild = 'lily';
+
+        function openTaskModal(childName) {
+            currentEditingChild = childName;
+            const modal = document.getElementById('taskModal');
+            const child = familyData[childName];
+            const titleEl = document.getElementById('taskModalTitle');
+            const contentEl = document.getElementById('taskEditContent');
             
-            data.events.sort((a, b) => new Date(a.date) - new Date(b.date));
+            titleEl.textContent = `Edit ${childName === 'lily' ? "Lily's" : "Rue's"} Tasks`;
             
             let html = '';
-            data.events.forEach((event, idx) => {
-                const date = new Date(event.date);
-                const formatted = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                html += `
-                    <div class="event-item" onclick="deleteEvent(${idx})">
-                        <div class="event-date">${formatted}</div>
-                        <div class="event-title">${event.title}</div>
-                        ${event.details ? `<div style="margin-top: 5px; opacity: 0.8;">${event.details}</div>` : ''}
-                    </div>`;
-            });
             
-            container.innerHTML = html;
+            // Morning tasks
+            html += '<h3>Morning Tasks</h3>';
+            html += '<textarea id="morningTaskInput" rows="6" placeholder="One task per line:&#10;Make bed ⭐1&#10;Brush teeth ⭐1">';
+            html += child.tasks.morning.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+            html += '</textarea>';
+            
+            // Weekday tasks (for Rue)
+            if (childName === 'rue') {
+                html += '<h3 style="margin-top: 15px;">School Days Tasks (Mon-Fri)</h3>';
+                html += '<textarea id="weekdayTaskInput" rows="3" placeholder="One task per line:&#10;Pack lunchbox ⭐1">';
+                html += child.tasks.weekday.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+                html += '</textarea>';
+            }
+            
+            // Afternoon tasks
+            html += '<h3 style="margin-top: 15px;">Afternoon Tasks</h3>';
+            html += '<textarea id="afternoonTaskInput" rows="4" placeholder="One task per line:&#10;Homework ⭐2">';
+            html += child.tasks.afternoon.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+            html += '</textarea>';
+            
+            contentEl.innerHTML = html;
+            modal.style.display = 'flex';
         }
 
-        function openEditModal() {
-            editingChild = currentTab === 'calendar' ? 'lily' : currentTab;
-            const child = data[editingChild];
+        function saveTaskChanges() {
+            const child = familyData[currentEditingChild];
             
-            document.getElementById('editChildName').textContent = editingChild.toUpperCase();
-            document.getElementById('weekdayMorning').value = child.weekdayMorning.join('\n');
-            document.getElementById('weekdayAfternoon').value = child.weekdayAfternoon.join('\n');
-            document.getElementById('weekendMorning').value = child.weekendMorning.join('\n');
-            document.getElementById('weekendAfternoon').value = child.weekendAfternoon.join('\n');
-            
-            document.getElementById('editModal').style.display = 'flex';
-        }
+            const parseTasks = (input) => {
+                if (!input) return [];
+                return input.split('\n').filter(l => l.trim()).map(line => {
+                    const match = line.match(/(.+?)\s*⭐(\d+)/);
+                    if (match) {
+                        return { name: match[1].trim(), stars: parseInt(match[2]) };
+                    } else {
+                        return { name: line.trim(), stars: 1 };
+                    }
+                });
+            };
 
-        function saveChoreChanges() {
-            const child = data[editingChild];
+            const morningInput = document.getElementById('morningTaskInput').value;
+            const afternoonInput = document.getElementById('afternoonTaskInput').value;
             
-            child.weekdayMorning = document.getElementById('weekdayMorning').value.split('\n').filter(l => l.trim());
-            child.weekdayAfternoon = document.getElementById('weekdayAfternoon').value.split('\n').filter(l => l.trim());
-            child.weekendMorning = document.getElementById('weekendMorning').value.split('\n').filter(l => l.trim());
-            child.weekendAfternoon = document.getElementById('weekendAfternoon').value.split('\n').filter(l => l.trim());
+            child.tasks.morning = parseTasks(morningInput);
+            child.tasks.afternoon = parseTasks(afternoonInput);
             
-            // Reset completed tasks
-            Object.keys(child.completed).forEach(day => {
-                child.completed[day] = { morning: [], afternoon: [] };
-            });
-            
-            save();
-            renderChild(editingChild);
-            closeModal('editModal');
-        }
+            if (currentEditingChild === 'rue') {
+                const weekdayInput = document.getElementById('weekdayTaskInput').value;
+                child.tasks.weekday = parseTasks(weekdayInput);
+            }
 
-        function openRewardModal() {
-            document.getElementById('lilyRewardsInput').value = data.lily.rewards.join('\n');
-            document.getElementById('rueRewardsInput').value = data.rue.rewards.join('\n');
-            document.getElementById('rewardModal').style.display = 'flex';
-        }
-
-        function saveRewardChanges() {
-            data.lily.rewards = document.getElementById('lilyRewardsInput').value.split('\n').filter(l => l.trim());
-            data.rue.rewards = document.getElementById('rueRewardsInput').value.split('\n').filter(l => l.trim());
-            
-            save();
-            renderRewards('lily');
-            renderRewards('rue');
-            closeModal('rewardModal');
+            initializeWeeklyTasks();
+            autoSave();
+            renderChores();
+            closeModal('taskModal');
         }
 
         function openEventModal() {
+            document.getElementById('eventModal').style.display = 'flex';
             document.getElementById('eventDate').value = '';
             document.getElementById('eventTitle').value = '';
             document.getElementById('eventDetails').value = '';
-            document.getElementById('eventModal').style.display = 'flex';
         }
 
         function saveEvent() {
             const date = document.getElementById('eventDate').value;
             const title = document.getElementById('eventTitle').value;
             const details = document.getElementById('eventDetails').value;
-            
+
             if (!date || !title) {
                 alert('Please enter a date and event name');
                 return;
             }
-            
-            data.events.push({ date, title, details });
-            save();
+
+            familyData.events.push({ date, title, details });
+            autoSave();
             renderCalendar();
             closeModal('eventModal');
         }
 
-        function deleteEvent(idx) {
+        function deleteEvent(index) {
             if (confirm('Delete this event?')) {
-                data.events.splice(idx, 1);
-                save();
+                familyData.events.splice(index, 1);
+                autoSave();
                 renderCalendar();
             }
         }
 
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
         function resetWeek() {
             if (confirm('Reset all tasks for the week? Stars will be kept.')) {
-                ['lily', 'rue'].forEach(child => {
-                    Object.keys(data[child].completed).forEach(day => {
-                        data[child].completed[day] = { morning: [], afternoon: [] };
-                    });
-                });
-                save();
-                renderChild('lily');
-                renderChild('rue');
+                initializeWeeklyTasks();
+                autoSave();
+                renderChores();
             }
         }
 
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        function save() {
-            localStorage.setItem('lilyRueChores', JSON.stringify(data));
-        }
-
-        function load() {
-            const saved = localStorage.getItem('lilyRueChores');
-            if (saved) {
-                data = JSON.parse(saved);
-            }
+        function connectGoogleCalendar() {
+            const statusDiv = document.getElementById('syncStatus');
+            statusDiv.innerHTML = '<div style="color: #ffa500;">⚠️ Google Calendar integration requires a backend server. This is a demo placeholder.</div>';
+            
+            // In a real implementation, this would:
+            // 1. Use Google OAuth 2.0 to authenticate
+            // 2. Request calendar.readonly scope
+            // 3. Fetch events using Google Calendar API
+            // 4. Sync them to familyData.events
+            
+            alert('Google Calendar integration requires server-side setup.\n\nTo implement this:\n1. Set up a Google Cloud Project\n2. Enable Calendar API\n3. Implement OAuth 2.0 flow\n4. Use a backend to handle API requests\n\nFor now, you can manually add events using the "Add Event" button!');
         }
 
         // Initialize
-        load();
-        updateBackground();
-        renderChild('lily');
-        renderChild('rue');
-        renderRewards('lily');
-        renderRewards('rue');
+        loadData();
+        renderChores();
         renderCalendar();
-        updateHeaderStars();
-        
-        setInterval(save, 30000);
-        
+
+        // Auto-save every 30 seconds
+        setInterval(autoSave, 30000);
+
+        // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
