@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lily & Rue's Weekly Chores Chart</title>
+    <title>Lily & Rue's Weekly Chart</title>
     <style>
         * {
             margin: 0;
@@ -12,191 +12,287 @@
         }
 
         body {
-            font-family: 'Arial Black', Arial, sans-serif;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #a1c4fd 100%);
-            min-height: 100vh;
-            padding: 30px;
-            color: #333;
+            font-family: 'Arial', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 25%, #feca57 50%, #48dbfb 75%, #0abde3 100%);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255,255,255,.05) 50px, rgba(255,255,255,.05) 100px);
+            pointer-events: none;
         }
 
         .container {
-            max-width: 1900px;
-            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
             text-align: center;
-            font-size: 4rem;
-            margin-bottom: 15px;
-            color: white;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .weekly-section {
-            background: white;
-            border-radius: 25px;
-            padding: 35px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .section-title {
             font-size: 2.5rem;
-            margin-bottom: 25px;
-            color: #ff6b9d;
-            text-align: center;
-        }
-
-        .child-week {
-            margin-bottom: 40px;
-        }
-
-        .child-name {
-            font-size: 2.8rem;
-            color: #667eea;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .star-total {
-            font-size: 3rem;
-            color: #ffd700;
-        }
-
-        .week-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-
-        .day-column {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 15px 10px;
-            min-height: 300px;
-        }
-
-        .day-header {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 15px;
-            text-align: center;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .task-item {
-            background: white;
-            padding: 12px;
             margin-bottom: 8px;
-            border-radius: 10px;
+            color: white;
+            text-shadow: 3px 3px 0px #c44569, 6px 6px 0px rgba(0,0,0,0.2);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: linear-gradient(135deg, white, #f0f0f0);
+            border: 3px solid #c44569;
+            padding: 10px 30px;
+            font-size: 1.5rem;
+            border-radius: 0;
             cursor: pointer;
+            font-weight: 900;
+            color: #c44569;
             transition: all 0.3s;
-            font-size: 1.2rem;
-            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
             position: relative;
         }
 
-        .task-item:hover {
-            transform: scale(1.05);
-            border-color: #667eea;
+        .tab-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
         }
 
-        .task-item.completed {
-            background: #d4edda;
-            text-decoration: line-through;
-            opacity: 0.6;
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            border-color: white;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
         }
 
-        .task-item .check {
-            position: absolute;
-            right: 8px;
-            top: 8px;
-            font-size: 1.5rem;
+        .tab-content {
+            display: none;
+            flex: 1;
+            overflow: hidden;
         }
 
-        .edit-btn {
-            background: #ffc107;
-            color: #333;
-            border: none;
-            padding: 8px 12px;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .edit-btn:hover {
-            background: #ffb300;
-        }
-
-        .rewards-calendar-section {
+        .tab-content.active {
             display: flex;
             flex-direction: column;
-            gap: 30px;
         }
 
-        .rewards-box, .calendar-box {
-            background: white;
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .reward-item {
-            background: #fff3cd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 12px;
+        /* CHORES TAB */
+        .single-child-view {
+            flex: 1;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+        }
+
+        .chores-grid {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .child-section {
+            background: white;
+            border-radius: 0;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 12px;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.2);
+            flex: 1;
+            border: 4px solid #c44569;
+            position: relative;
+        }
+
+        .child-section::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(135deg, #ff6b9d, #feca57, #48dbfb);
+            z-index: -1;
+            border-radius: 0;
+        }
+
+        .child-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            font-size: 1.4rem;
-            cursor: pointer;
+            gap: 10px;
         }
 
-        .reward-item:hover {
-            background: #ffe69c;
+        .child-name {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .reward-cost {
-            font-weight: bold;
+        .star-count {
+            font-size: 2.2rem;
             color: #ffd700;
-            font-size: 1.6rem;
         }
 
-        .child-rewards {
-            margin-bottom: 25px;
+        .rewards-mini {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            padding: 12px;
+            border-radius: 0;
+            font-size: 0.9rem;
+            border: 3px solid #c44569;
+            font-weight: bold;
+            color: #2d3436;
         }
 
-        .child-rewards-title {
-            font-size: 1.8rem;
+        .week-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-col {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 0;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            border: 3px solid #48dbfb;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+        }
+
+        .day-header {
+            font-size: 1rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #48dbfb, #0abde3);
+            color: white;
+            text-align: center;
+            margin: -6px -6px 6px -6px;
+            padding: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .time-section {
+            margin-bottom: 6px;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: #c44569;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .task {
+            background: white;
+            padding: 5px 8px 5px 28px;
+            margin-bottom: 3px;
+            border-radius: 0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #dfe6e9;
+            position: relative;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .task::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+
+        .task:hover {
+            border-color: #c44569;
+            transform: translateX(3px);
+            box-shadow: 3px 3px 0px rgba(196, 69, 105, 0.3);
+        }
+
+        .task.completed {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            border-color: #00b894;
+            text-decoration: line-through;
+            opacity: 0.7;
+            color: white;
+        }
+
+        .task .check {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+        }
+
+        /* CALENDAR TAB */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .calendar-box {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
             color: #667eea;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .calendar-event {
             background: #e7f3ff;
             padding: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border-radius: 12px;
             border-left: 5px solid #2196F3;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .calendar-event:hover {
             background: #cfe8ff;
+            transform: translateX(5px);
         }
 
         .event-date {
@@ -205,45 +301,67 @@
             margin-bottom: 5px;
         }
 
-        .controls {
+        .google-sync {
+            background: #4285f4;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
             text-align: center;
-            padding: 30px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 20px;
+            font-size: 1.1rem;
         }
 
-        .btn {
-            background: #28a745;
-            color: white;
+        .google-sync button {
+            background: white;
+            color: #4285f4;
             border: none;
-            padding: 20px 40px;
-            font-size: 1.6rem;
-            border-radius: 12px;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            border-radius: 8px;
             cursor: pointer;
-            margin: 8px;
-            transition: all 0.3s;
+            margin-top: 10px;
             font-weight: bold;
         }
 
+        .google-sync button:hover {
+            background: #f0f0f0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+            border: 3px solid #00b894;
+            padding: 8px 20px;
+            font-size: 1rem;
+            border-radius: 0;
+            cursor: pointer;
+            margin: 3px;
+            font-weight: 900;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
         .btn:hover {
-            background: #218838;
-            transform: scale(1.05);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
         }
 
         .btn-blue {
-            background: #2196F3;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-color: #0984e3;
         }
 
-        .btn-blue:hover {
-            background: #0b7dda;
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-color: #fdcb6e;
+            color: #2d3436;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 8px;
         }
 
         .modal {
@@ -261,7 +379,7 @@
 
         .modal-content {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             max-width: 600px;
             width: 90%;
@@ -274,16 +392,11 @@
 
         .modal input, .modal textarea {
             width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
             border: 2px solid #ddd;
-            border-radius: 10px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -291,58 +404,90 @@
     <div class="container">
         <h1>🌸 Lily & Rue's Weekly Chart 🌸</h1>
 
-        <div class="main-grid">
-            <div class="weekly-section">
-                <div id="weeklyChores"></div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('lily')">🌺 Lily</button>
+            <button class="tab-btn" onclick="switchTab('rue')">🌸 Rue</button>
+            <button class="tab-btn" onclick="switchTab('calendar')">📅 Calendar</button>
+        </div>
+
+        <!-- LILY'S TAB -->
+        <div id="lilyTab" class="tab-content active">
+            <div class="single-child-view">
+                <div class="child-section">
+                    <div class="child-header">
+                        <div class="child-name">Lily</div>
+                        <div class="star-count"><span id="lilyStars">0</span> ⭐</div>
+                        <div class="rewards-mini" id="lilyRewards"></div>
+                    </div>
+                    <div class="week-container" id="lilyWeek"></div>
+                </div>
             </div>
 
-            <div class="rewards-calendar-section">
-                <div class="rewards-box">
-                    <div class="section-title">🎁 Rewards</div>
-                    <div id="rewardsSection"></div>
-                    <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="openRewardModal()">✏️ Edit Rewards</button>
-                </div>
-
-                <div class="calendar-box">
-                    <div class="section-title">📅 Family Calendar</div>
-                    <div id="calendarEvents"></div>
-                    <button class="btn btn-blue" style="width: 100%; margin-top: 15px;" onclick="openEventModal()">➕ Add Event</button>
-                </div>
+            <div class="controls">
+                <button class="btn" onclick="openTaskModal('lily')">✏️ Edit Lily's Tasks</button>
+                <button class="btn btn-secondary" onclick="resetWeek()">🔄 Reset Week</button>
+                <button class="btn btn-secondary" onclick="saveData()">💾 Save</button>
             </div>
         </div>
 
-        <div class="controls">
-            <button class="btn" onclick="openTaskModal()">✏️ Edit Tasks</button>
-            <button class="btn btn-secondary" onclick="resetWeek()">🔄 Reset Week</button>
-            <button class="btn btn-secondary" onclick="saveData()">💾 Save</button>
+        <!-- RUE'S TAB -->
+        <div id="rueTab" class="tab-content">
+            <div class="single-child-view">
+                <div class="child-section">
+                    <div class="child-header">
+                        <div class="child-name">Rue</div>
+                        <div class="star-count"><span id="rueStars">0</span> ⭐</div>
+                        <div class="rewards-mini" id="rueRewards"></div>
+                    </div>
+                    <div class="week-container" id="rueWeek"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="openTaskModal('rue')">✏️ Edit Rue's Tasks</button>
+                <button class="btn btn-secondary" onclick="resetWeek()">🔄 Reset Week</button>
+                <button class="btn btn-secondary" onclick="saveData()">💾 Save</button>
+            </div>
+        </div>
+
+        <!-- CALENDAR TAB -->
+        <div id="calendarTab" class="tab-content">
+            <div class="calendar-container">
+                <div class="calendar-box">
+                    <div class="section-title">📅 Family Events</div>
+                    <div id="calendarEvents"></div>
+                    <button class="btn btn-blue" style="width: 100%; margin-top: 15px;" onclick="openEventModal()">➕ Add Event</button>
+                </div>
+
+                <div class="calendar-box">
+                    <div class="section-title">Google Calendar Sync</div>
+                    <div class="google-sync">
+                        <div>🔗 Connect your Google Calendar to see family events here automatically!</div>
+                        <button onclick="connectGoogleCalendar()">Connect Google Calendar</button>
+                        <div id="syncStatus" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                        <h3 style="margin-bottom: 10px;">How it works:</h3>
+                        <ol style="font-size: 1rem; line-height: 1.6;">
+                            <li>Click "Connect Google Calendar"</li>
+                            <li>Sign in to your Google account</li>
+                            <li>Grant permission to view your calendar</li>
+                            <li>Events will sync automatically!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Edit Task Modal -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
-            <h2>Edit Daily Tasks</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 20px;">Enter one task per line. Add ⭐ for star value (e.g., "Make bed ⭐2")</p>
-            <textarea id="taskInput" rows="10" placeholder="Make bed ⭐1
-Feed pet ⭐2
-Homework ⭐3"></textarea>
+            <h2 id="taskModalTitle">Edit Tasks</h2>
+            <div id="taskEditContent"></div>
             <button class="btn" onclick="saveTaskChanges()">Save Changes</button>
             <button class="btn btn-secondary" onclick="closeModal('taskModal')">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Edit Rewards Modal -->
-    <div id="rewardModal" class="modal">
-        <div class="modal-content">
-            <h2>Edit Rewards</h2>
-            <h3 style="margin-top: 20px;">Lily's Rewards</h3>
-            <textarea id="lilyRewardsInput" rows="5" placeholder="30 min screen time ⭐5
-Ice cream trip ⭐10"></textarea>
-            <h3 style="margin-top: 20px;">Rue's Rewards</h3>
-            <textarea id="rueRewardsInput" rows="5" placeholder="Extra bedtime story ⭐5
-Trip to park ⭐10"></textarea>
-            <button class="btn" onclick="saveRewardChanges()">Save Changes</button>
-            <button class="btn btn-secondary" onclick="closeModal('rewardModal')">Cancel</button>
         </div>
     </div>
 
@@ -350,73 +495,105 @@ Trip to park ⭐10"></textarea>
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <h2>Add Family Event</h2>
-            <input type="date" id="eventDate" style="margin-bottom: 15px;">
+            <input type="date" id="eventDate">
             <input type="text" id="eventTitle" placeholder="Event name">
-            <input type="text" id="eventDetails" placeholder="Details (optional)">
+            <input type="text" id="eventDetails" placeholder="Time/Details (optional)">
             <button class="btn btn-blue" onclick="saveEvent()">Add Event</button>
             <button class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
         </div>
     </div>
 
     <script>
-        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         let familyData = {
-            tasks: [
-                { name: "Make bed", stars: 1 },
-                { name: "Brush teeth", stars: 1 },
-                { name: "Feed pet", stars: 2 },
-                { name: "Homework", stars: 3 },
-                { name: "Tidy room", stars: 2 }
-            ],
-            children: [
-                {
-                    name: "Lily",
-                    stars: 0,
-                    weeklyTasks: {
-                        Monday: [false, false, false, false, false],
-                        Tuesday: [false, false, false, false, false],
-                        Wednesday: [false, false, false, false, false],
-                        Thursday: [false, false, false, false, false],
-                        Friday: [false, false, false, false, false],
-                        Saturday: [false, false, false, false, false],
-                        Sunday: [false, false, false, false, false]
-                    },
-                    rewards: [
-                        { name: "30 min extra screen time", cost: 5 },
-                        { name: "Choose dinner menu", cost: 10 },
-                        { name: "Movie night pick", cost: 15 }
+            lily: {
+                stars: 0,
+                tasks: {
+                    morning: [
+                        { name: "Make bed", stars: 1 },
+                        { name: "Brush teeth", stars: 1 },
+                        { name: "Get dressed", stars: 1 }
+                    ],
+                    weekday: [],
+                    afternoon: [
+                        { name: "Homework", stars: 2 },
+                        { name: "Tidy room", stars: 2 }
                     ]
                 },
-                {
-                    name: "Rue",
-                    stars: 0,
-                    weeklyTasks: {
-                        Monday: [false, false, false, false, false],
-                        Tuesday: [false, false, false, false, false],
-                        Wednesday: [false, false, false, false, false],
-                        Thursday: [false, false, false, false, false],
-                        Friday: [false, false, false, false, false],
-                        Saturday: [false, false, false, false, false],
-                        Sunday: [false, false, false, false, false]
-                    },
-                    rewards: [
-                        { name: "Extra bedtime story", cost: 5 },
-                        { name: "Park trip", cost: 10 },
-                        { name: "Special treat", cost: 15 }
+                weeklyTasks: {},
+                rewards: [
+                    { name: "30 min screen time", cost: 5 },
+                    { name: "Choose dinner", cost: 10 },
+                    { name: "Movie pick", cost: 15 }
+                ]
+            },
+            rue: {
+                stars: 0,
+                tasks: {
+                    morning: [
+                        { name: "Toilet", stars: 1 },
+                        { name: "Eat breakfast", stars: 1 },
+                        { name: "Brush teeth", stars: 1 },
+                        { name: "Get dressed", stars: 1 },
+                        { name: "Brush hair", stars: 1 },
+                        { name: "Feed animals", stars: 2 }
+                    ],
+                    weekday: [
+                        { name: "Pack lunchbox", stars: 1 },
+                        { name: "Pack bag", stars: 1 }
+                    ],
+                    afternoon: [
+                        { name: "Tidy room", stars: 2 },
+                        { name: "Unpack dishwasher", stars: 2 }
                     ]
-                }
-            ],
+                },
+                weeklyTasks: {},
+                rewards: [
+                    { name: "Extra story", cost: 5 },
+                    { name: "Park trip", cost: 10 },
+                    { name: "Special treat", cost: 15 }
+                ]
+            },
             events: [
-                { date: "2026-02-20", title: "Doctor appointment", details: "10:00 AM" },
-                { date: "2026-02-22", title: "Soccer practice", details: "4:00 PM" }
-            ]
+                { date: "2026-02-20", title: "Doctor appointment", details: "10:00 AM" }
+            ],
+            googleCalendarConnected: false
         };
+
+        // Initialize weekly tasks
+        function initializeWeeklyTasks() {
+            days.forEach((day, index) => {
+                const isWeekday = index < 5; // Mon-Fri
+                
+                // Lily
+                const lilyMorningCount = familyData.lily.tasks.morning.length;
+                const lilyAfternoonCount = familyData.lily.tasks.afternoon.length;
+                familyData.lily.weeklyTasks[day] = {
+                    morning: new Array(lilyMorningCount).fill(false),
+                    afternoon: new Array(lilyAfternoonCount).fill(false)
+                };
+
+                // Rue
+                const rueMorningCount = familyData.rue.tasks.morning.length;
+                const rueWeekdayCount = familyData.rue.tasks.weekday.length;
+                const rueAfternoonCount = familyData.rue.tasks.afternoon.length;
+                familyData.rue.weeklyTasks[day] = {
+                    morning: new Array(rueMorningCount).fill(false),
+                    weekday: isWeekday ? new Array(rueWeekdayCount).fill(false) : [],
+                    afternoon: new Array(rueAfternoonCount).fill(false)
+                };
+            });
+        }
 
         function loadData() {
             const saved = localStorage.getItem('lilyRueChartData');
             if (saved) {
-                familyData = JSON.parse(saved);
+                const loadedData = JSON.parse(saved);
+                // Merge with default structure to handle updates
+                familyData = { ...familyData, ...loadedData };
+            } else {
+                initializeWeeklyTasks();
             }
         }
 
@@ -429,65 +606,145 @@ Trip to park ⭐10"></textarea>
             localStorage.setItem('lilyRueChartData', JSON.stringify(familyData));
         }
 
-        function renderWeeklyChores() {
-            const container = document.getElementById('weeklyChores');
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'lily') {
+                document.getElementById('lilyTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            } else if (tabName === 'rue') {
+                document.getElementById('rueTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            } else {
+                document.getElementById('calendarTab').classList.add('active');
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            }
+        }
+
+        function renderChores() {
+            renderChild('lily', 'lilyWeek', 'lilyStars', 'lilyRewards');
+            renderChild('rue', 'rueWeek', 'rueStars', 'rueRewards');
+        }
+
+        function getTaskIcon(taskName) {
+            const name = taskName.toLowerCase();
+            
+            // Morning tasks
+            if (name.includes('toilet')) return '🚽';
+            if (name.includes('breakfast') || name.includes('eat')) return '🍳';
+            if (name.includes('brush teeth') || name.includes('teeth')) return '🪥';
+            if (name.includes('dressed') || name.includes('clothes')) return '👕';
+            if (name.includes('brush hair') || name.includes('hair')) return '💇';
+            if (name.includes('bed')) return '🛏️';
+            
+            // Animal/pet tasks
+            if (name.includes('feed animals') || name.includes('feed pet')) return '🐾';
+            if (name.includes('dog')) return '🐕';
+            if (name.includes('cat')) return '🐱';
+            
+            // School tasks
+            if (name.includes('lunchbox') || name.includes('lunch')) return '🍱';
+            if (name.includes('bag') || name.includes('backpack')) return '🎒';
+            if (name.includes('homework')) return '📚';
+            
+            // Chores
+            if (name.includes('tidy') || name.includes('clean room')) return '🧹';
+            if (name.includes('dishwasher') || name.includes('dishes')) return '🍽️';
+            if (name.includes('trash') || name.includes('garbage')) return '🗑️';
+            if (name.includes('laundry')) return '👔';
+            if (name.includes('vacuum')) return '🧹';
+            
+            // Default
+            return '⭐';
+        }
+
+        function renderChild(childName, weekContainerId, starsId, rewardsId) {
+            const child = familyData[childName];
+            const container = document.getElementById(weekContainerId);
             container.innerHTML = '';
 
-            familyData.children.forEach((child, childIndex) => {
-                const childDiv = document.createElement('div');
-                childDiv.className = 'child-week';
+            // Update stars
+            document.getElementById(starsId).textContent = child.stars;
 
-                let weekHTML = '<div class="week-grid">';
-                days.forEach((day, dayIndex) => {
-                    weekHTML += `<div class="day-column">
-                        <div class="day-header">${day}</div>`;
-                    
-                    familyData.tasks.forEach((task, taskIndex) => {
-                        const isCompleted = child.weeklyTasks[day][taskIndex];
-                        weekHTML += `
-                            <div class="task-item ${isCompleted ? 'completed' : ''}" 
-                                 onclick="toggleTask(${childIndex}, '${day}', ${taskIndex})">
+            // Update rewards mini
+            const rewardsHTML = child.rewards.map(r => `<div>${r.name} ${r.cost}⭐</div>`).join('');
+            document.getElementById(rewardsId).innerHTML = rewardsHTML;
+
+            // Render week
+            days.forEach((day, dayIndex) => {
+                const dayCol = document.createElement('div');
+                dayCol.className = 'day-col';
+                
+                let tasksHTML = `<div class="day-header">${day}</div>`;
+
+                // Morning tasks
+                tasksHTML += '<div class="time-section"><div class="time-label">Morning</div>';
+                child.tasks.morning.forEach((task, taskIndex) => {
+                    const completed = child.weeklyTasks[day].morning[taskIndex];
+                    const icon = getTaskIcon(task.name);
+                    tasksHTML += `
+                        <div class="task ${completed ? 'completed' : ''}" 
+                             data-icon="${icon}"
+                             onclick="toggleTask('${childName}', '${day}', 'morning', ${taskIndex})">
+                            ${task.name}
+                            <span class="check">${completed ? '✓' : ''}</span>
+                        </div>`;
+                });
+                tasksHTML += '</div>';
+
+                // Weekday tasks (Rue only, Mon-Fri)
+                if (childName === 'rue' && dayIndex < 5) {
+                    tasksHTML += '<div class="time-section"><div class="time-label">School</div>';
+                    child.tasks.weekday.forEach((task, taskIndex) => {
+                        const completed = child.weeklyTasks[day].weekday[taskIndex];
+                        const icon = getTaskIcon(task.name);
+                        tasksHTML += `
+                            <div class="task ${completed ? 'completed' : ''}" 
+                                 data-icon="${icon}"
+                                 onclick="toggleTask('${childName}', '${day}', 'weekday', ${taskIndex})">
                                 ${task.name}
-                                <span class="check">${isCompleted ? '✓' : ''}</span>
+                                <span class="check">${completed ? '✓' : ''}</span>
                             </div>`;
                     });
-                    
-                    weekHTML += '</div>';
+                    tasksHTML += '</div>';
+                }
+
+                // Afternoon tasks
+                tasksHTML += '<div class="time-section"><div class="time-label">Afternoon</div>';
+                child.tasks.afternoon.forEach((task, taskIndex) => {
+                    const completed = child.weeklyTasks[day].afternoon[taskIndex];
+                    const icon = getTaskIcon(task.name);
+                    tasksHTML += `
+                        <div class="task ${completed ? 'completed' : ''}" 
+                             data-icon="${icon}"
+                             onclick="toggleTask('${childName}', '${day}', 'afternoon', ${taskIndex})">
+                            ${task.name}
+                            <span class="check">${completed ? '✓' : ''}</span>
+                        </div>`;
                 });
-                weekHTML += '</div>';
+                tasksHTML += '</div>';
 
-                childDiv.innerHTML = `
-                    <div class="child-name">
-                        <span>${child.name}</span>
-                        <span class="star-total">${child.stars} ⭐</span>
-                    </div>
-                    ${weekHTML}
-                `;
-
-                container.appendChild(childDiv);
+                dayCol.innerHTML = tasksHTML;
+                container.appendChild(dayCol);
             });
         }
 
-        function renderRewards() {
-            const container = document.getElementById('rewardsSection');
-            container.innerHTML = '';
-
-            familyData.children.forEach(child => {
-                const childRewards = document.createElement('div');
-                childRewards.className = 'child-rewards';
-                
-                let rewardsHTML = `<div class="child-rewards-title">${child.name}'s Rewards</div>`;
-                child.rewards.forEach(reward => {
-                    rewardsHTML += `
-                        <div class="reward-item">
-                            <span>${reward.name}</span>
-                            <span class="reward-cost">${reward.cost}⭐</span>
-                        </div>`;
-                });
-                
-                childRewards.innerHTML = rewardsHTML;
-                container.appendChild(childRewards);
-            });
+        function toggleTask(childName, day, timeOfDay, taskIndex) {
+            const child = familyData[childName];
+            const task = child.tasks[timeOfDay][taskIndex];
+            const currentStatus = child.weeklyTasks[day][timeOfDay][taskIndex];
+            
+            child.weeklyTasks[day][timeOfDay][taskIndex] = !currentStatus;
+            
+            if (!currentStatus) {
+                child.stars += task.stars;
+            } else {
+                child.stars -= task.stars;
+            }
+            
+            autoSave();
+            renderChores();
         }
 
         function renderCalendar() {
@@ -506,102 +763,86 @@ Trip to park ⭐10"></textarea>
                 eventDiv.className = 'calendar-event';
                 eventDiv.onclick = () => deleteEvent(index);
                 
-                const date = new Date(event.date);
+                const date = new Date(event.date + 'T00:00:00');
                 const formattedDate = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
                 
                 eventDiv.innerHTML = `
                     <div class="event-date">${formattedDate}</div>
                     <div>${event.title}</div>
-                    ${event.details ? `<div style="font-size: 1.1rem; opacity: 0.8;">${event.details}</div>` : ''}
+                    ${event.details ? `<div style="font-size: 1rem; opacity: 0.8;">${event.details}</div>` : ''}
                 `;
                 
                 container.appendChild(eventDiv);
             });
         }
 
-        function toggleTask(childIndex, day, taskIndex) {
-            const child = familyData.children[childIndex];
-            const task = familyData.tasks[taskIndex];
-            const currentStatus = child.weeklyTasks[day][taskIndex];
+        let currentEditingChild = 'lily';
+
+        function openTaskModal(childName) {
+            currentEditingChild = childName;
+            const modal = document.getElementById('taskModal');
+            const child = familyData[childName];
+            const titleEl = document.getElementById('taskModalTitle');
+            const contentEl = document.getElementById('taskEditContent');
             
-            child.weeklyTasks[day][taskIndex] = !currentStatus;
+            titleEl.textContent = `Edit ${childName === 'lily' ? "Lily's" : "Rue's"} Tasks`;
             
-            if (!currentStatus) {
-                child.stars += task.stars;
-            } else {
-                child.stars -= task.stars;
+            let html = '';
+            
+            // Morning tasks
+            html += '<h3>Morning Tasks</h3>';
+            html += '<textarea id="morningTaskInput" rows="6" placeholder="One task per line:&#10;Make bed ⭐1&#10;Brush teeth ⭐1">';
+            html += child.tasks.morning.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+            html += '</textarea>';
+            
+            // Weekday tasks (for Rue)
+            if (childName === 'rue') {
+                html += '<h3 style="margin-top: 15px;">School Days Tasks (Mon-Fri)</h3>';
+                html += '<textarea id="weekdayTaskInput" rows="3" placeholder="One task per line:&#10;Pack lunchbox ⭐1">';
+                html += child.tasks.weekday.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+                html += '</textarea>';
             }
             
-            autoSave();
-            renderWeeklyChores();
-            renderRewards();
-        }
-
-        function openTaskModal() {
-            const modal = document.getElementById('taskModal');
-            const input = document.getElementById('taskInput');
+            // Afternoon tasks
+            html += '<h3 style="margin-top: 15px;">Afternoon Tasks</h3>';
+            html += '<textarea id="afternoonTaskInput" rows="4" placeholder="One task per line:&#10;Homework ⭐2">';
+            html += child.tasks.afternoon.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+            html += '</textarea>';
             
-            input.value = familyData.tasks.map(t => `${t.name} ⭐${t.stars}`).join('\n');
+            contentEl.innerHTML = html;
             modal.style.display = 'flex';
         }
 
         function saveTaskChanges() {
-            const input = document.getElementById('taskInput').value;
-            const lines = input.split('\n').filter(l => l.trim());
+            const child = familyData[currentEditingChild];
             
-            const newTasks = lines.map(line => {
-                const match = line.match(/(.+?)\s*⭐(\d+)/);
-                if (match) {
-                    return { name: match[1].trim(), stars: parseInt(match[2]) };
-                } else {
-                    return { name: line.trim(), stars: 1 };
-                }
-            });
-
-            familyData.tasks = newTasks;
-            
-            // Reset weekly tasks to match new task count
-            familyData.children.forEach(child => {
-                days.forEach(day => {
-                    child.weeklyTasks[day] = new Array(newTasks.length).fill(false);
-                });
-            });
-
-            autoSave();
-            renderWeeklyChores();
-            closeModal('taskModal');
-        }
-
-        function openRewardModal() {
-            const modal = document.getElementById('rewardModal');
-            document.getElementById('lilyRewardsInput').value = 
-                familyData.children[0].rewards.map(r => `${r.name} ⭐${r.cost}`).join('\n');
-            document.getElementById('rueRewardsInput').value = 
-                familyData.children[1].rewards.map(r => `${r.name} ⭐${r.cost}`).join('\n');
-            modal.style.display = 'flex';
-        }
-
-        function saveRewardChanges() {
-            const lilyInput = document.getElementById('lilyRewardsInput').value;
-            const rueInput = document.getElementById('rueRewardsInput').value;
-
-            const parseRewards = (input) => {
+            const parseTasks = (input) => {
+                if (!input) return [];
                 return input.split('\n').filter(l => l.trim()).map(line => {
                     const match = line.match(/(.+?)\s*⭐(\d+)/);
                     if (match) {
-                        return { name: match[1].trim(), cost: parseInt(match[2]) };
+                        return { name: match[1].trim(), stars: parseInt(match[2]) };
                     } else {
-                        return { name: line.trim(), cost: 5 };
+                        return { name: line.trim(), stars: 1 };
                     }
                 });
             };
 
-            familyData.children[0].rewards = parseRewards(lilyInput);
-            familyData.children[1].rewards = parseRewards(rueInput);
+            const morningInput = document.getElementById('morningTaskInput').value;
+            const afternoonInput = document.getElementById('afternoonTaskInput').value;
+            
+            child.tasks.morning = parseTasks(morningInput);
+            child.tasks.afternoon = parseTasks(afternoonInput);
+            
+            if (currentEditingChild === 'rue') {
+                const weekdayInput = document.getElementById('weekdayTaskInput').value;
+                child.tasks.weekday = parseTasks(weekdayInput);
+            }
 
+            initializeWeeklyTasks();
             autoSave();
-            renderRewards();
-            closeModal('rewardModal');
+            renderChores();
+            closeModal('taskModal');
         }
 
         function openEventModal() {
@@ -641,20 +882,28 @@ Trip to park ⭐10"></textarea>
 
         function resetWeek() {
             if (confirm('Reset all tasks for the week? Stars will be kept.')) {
-                familyData.children.forEach(child => {
-                    days.forEach(day => {
-                        child.weeklyTasks[day] = new Array(familyData.tasks.length).fill(false);
-                    });
-                });
+                initializeWeeklyTasks();
                 autoSave();
-                renderWeeklyChores();
+                renderChores();
             }
+        }
+
+        function connectGoogleCalendar() {
+            const statusDiv = document.getElementById('syncStatus');
+            statusDiv.innerHTML = '<div style="color: #ffa500;">⚠️ Google Calendar integration requires a backend server. This is a demo placeholder.</div>';
+            
+            // In a real implementation, this would:
+            // 1. Use Google OAuth 2.0 to authenticate
+            // 2. Request calendar.readonly scope
+            // 3. Fetch events using Google Calendar API
+            // 4. Sync them to familyData.events
+            
+            alert('Google Calendar integration requires server-side setup.\n\nTo implement this:\n1. Set up a Google Cloud Project\n2. Enable Calendar API\n3. Implement OAuth 2.0 flow\n4. Use a backend to handle API requests\n\nFor now, you can manually add events using the "Add Event" button!');
         }
 
         // Initialize
         loadData();
-        renderWeeklyChores();
-        renderRewards();
+        renderChores();
         renderCalendar();
 
         // Auto-save every 30 seconds
