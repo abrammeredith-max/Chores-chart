@@ -22,7 +22,7 @@
   body {
     font-family: 'Nunito', sans-serif;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
     transition: background 0.8s ease;
   }
 
@@ -113,32 +113,48 @@
     text-shadow: 0 0 20px var(--gold);
   }
 
-  .tab-btn.lily.active { color: #FF6EFF; border-color: #FF6EFF; text-shadow: 0 0 20px #FF6EFF; }
-  .tab-btn.rue.active  { color: #6EEFFF; border-color: #6EEFFF; text-shadow: 0 0 20px #6EEFFF; }
+  .tab-btn.lily.active { 
+    background: linear-gradient(90deg, #FFD700, #FF3CAC, #2B86C5, #6EFF9E, #FFD700);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+    border-color: #FF6EFF;
+    filter: drop-shadow(0 0 8px rgba(255,110,255,0.6));
+  }
+  .tab-btn.rue.active  { 
+    background: linear-gradient(90deg, #FFD700, #FF3CAC, #2B86C5, #6EFF9E, #FFD700);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+    animation-delay: 0.5s;
+    border-color: #6EEFFF;
+    filter: drop-shadow(0 0 8px rgba(110,239,255,0.6));
+  }
   .tab-btn.cal.active  { color: #6EFF9E; border-color: #6EFF9E; text-shadow: 0 0 20px #6EFF9E; }
 
   /* ── MAIN PANEL ── */
   .main-panel {
     position: relative; z-index: 10;
-    margin: 0 20px;
+    margin: 0 20px 20px;
     background: rgba(0,0,0,0.65);
     backdrop-filter: blur(12px);
     border: 3px solid rgba(255,255,255,0.15);
     border-top: 3px solid rgba(255,255,255,0.3);
     border-radius: 0 12px 12px 12px;
     padding: 12px 16px;
-    height: calc(100vh - 110px);
-    overflow: hidden;
+    min-height: calc(100vh - 130px);
+    overflow: visible;
   }
 
-  .tab-content { display: none; height: 100%; }
+  .tab-content { display: none; }
   .tab-content.active { display: flex; flex-direction: column; }
 
   /* ── CHILD CHORE TAB ── */
   .chore-tab-inner {
     display: flex;
     gap: 12px;
-    height: 100%;
   }
 
   /* Left: Day selector + Rewards */
@@ -177,15 +193,11 @@
 
   /* Rewards box */
   .rewards-box {
-    flex: 1;
     background: rgba(255,215,0,0.08);
     border: 2px solid rgba(255,215,0,0.35);
     border-radius: 12px;
     padding: 10px;
-    overflow-y: auto;
   }
-  .rewards-box::-webkit-scrollbar { width: 4px; }
-  .rewards-box::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
 
   .rewards-title {
     font-family: 'Bangers', cursive;
@@ -217,7 +229,6 @@
     flex: 1;
     display: flex;
     gap: 12px;
-    overflow: hidden;
   }
 
   .chore-section {
@@ -240,14 +251,10 @@
   .afternoon-hdr { background: linear-gradient(90deg, rgba(120,75,160,0.3), rgba(43,134,197,0.2)); color: #C4A0FF; border: 1.5px solid rgba(120,75,160,0.4); }
 
   .chore-list {
-    flex: 1;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  .chore-list::-webkit-scrollbar { width: 4px; }
-  .chore-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
 
   .chore-item {
     display: flex;
@@ -330,7 +337,6 @@
 
   /* ── CALENDAR TAB ── */
   .cal-inner {
-    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -382,7 +388,7 @@
     border: 1.5px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     padding: 4px;
-    min-height: 70px;
+    min-height: 80px;
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
@@ -600,10 +606,21 @@
     letter-spacing: 3px;
   }
   .lily-name { 
-    color: #FF6EFF; text-shadow: 0 0 20px rgba(255,110,255,0.5), 3px 3px 0 rgba(0,0,0,0.5);
+    background: linear-gradient(90deg, #FFD700, #FF3CAC, #2B86C5, #6EFF9E, #FFD700);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+    filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.5));
   }
   .rue-name { 
-    color: #6EEFFF; text-shadow: 0 0 20px rgba(110,239,255,0.5), 3px 3px 0 rgba(0,0,0,0.5);
+    background: linear-gradient(90deg, #FFD700, #FF3CAC, #2B86C5, #6EFF9E, #FFD700);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+    animation-delay: 0.5s;
+    filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.5));
   }
 
   /* Calendar add event btn */
