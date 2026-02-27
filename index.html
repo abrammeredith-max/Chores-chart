@@ -1,919 +1,1316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lily & Rue's Chores Chart</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Chore Chart — Lily & Rue</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #FF3CAC;
+    --accent2: #784BA0;
+    --accent3: #2B86C5;
+    --gold: #FFD700;
+    --dark: #1a1a2e;
+    --light: #ffffff;
+    --radius: 16px;
+    --shadow: 4px 4px 0px rgba(0,0,0,0.5);
+  }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: all 0.5s ease;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Monday - Banksy street art graffiti style */
-        body.day-1 {
-            background: 
-                linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(40,40,40,0.7) 100%),
-                repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,0,100,0.1) 20px, rgba(255,0,100,0.1) 40px),
-                linear-gradient(to bottom, #1a1a1a 0%, #2d2d2d 100%);
-            color: #f0f0f0;
-        }
+  body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+    transition: background 0.8s ease;
+  }
 
-        /* Tuesday - Monet water lilies impressionist */
-        body.day-2 {
-            background:
-                radial-gradient(ellipse at 30% 40%, rgba(147,197,253,0.3), transparent 50%),
-                radial-gradient(ellipse at 70% 60%, rgba(196,181,253,0.3), transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(134,239,172,0.2), transparent 40%),
-                linear-gradient(135deg, #7dd3fc 0%, #a78bfa 50%, #86efac 100%);
-            color: #1a1a1a;
-        }
+  /* ── DAILY BACKGROUNDS ── */
+  body.day-0 { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+  body.day-1 { background: linear-gradient(135deg, #1d2671, #c33764); }
+  body.day-2 { background: linear-gradient(135deg, #134e5e, #71b280); }
+  body.day-3 { background: linear-gradient(135deg, #f7971e, #ffd200, #ff6b6b); }
+  body.day-4 { background: linear-gradient(135deg, #360033, #0b8793); }
+  body.day-5 { background: linear-gradient(135deg, #642b73, #c6426e); }
+  body.day-6 { background: linear-gradient(135deg, #093028, #237a57); }
 
-        /* Wednesday - Picasso cubism geometric */
-        body.day-3 {
-            background:
-                conic-gradient(from 45deg at 20% 30%, #fb923c 0deg, #fb923c 90deg, transparent 90deg, transparent 180deg, #3b82f6 180deg, #3b82f6 270deg, transparent 270deg),
-                conic-gradient(from 135deg at 80% 70%, #ec4899 0deg, #ec4899 90deg, transparent 90deg, transparent 180deg, #8b5cf6 180deg, #8b5cf6 270deg, transparent 270deg),
-                linear-gradient(45deg, #fb923c 0%, #3b82f6 50%, #ec4899 100%);
-            color: #1a1a1a;
-        }
+  /* Graffiti texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(255,60,172,0.08) 0%, transparent 60%),
+      radial-gradient(circle at 80% 20%, rgba(43,134,197,0.1) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
 
-        /* Thursday - Street art bold colors */
-        body.day-4 {
-            background:
-                repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.1) 60px, rgba(255,255,255,0.1) 120px),
-                repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,0,0,0.1) 60px, rgba(0,0,0,0.1) 120px),
-                linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
-            color: #1a1a1a;
-        }
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 20px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    border-bottom: 3px solid rgba(255,215,0,0.4);
+  }
 
-        /* Friday - Monet sunrise palette */
-        body.day-5 {
-            background:
-                radial-gradient(circle at 80% 20%, rgba(251,191,36,0.4), transparent 30%),
-                radial-gradient(circle at 60% 30%, rgba(251,146,60,0.3), transparent 25%),
-                radial-gradient(circle at 70% 25%, rgba(252,165,165,0.3), transparent 20%),
-                linear-gradient(to bottom, #fbbf24 0%, #fb923c 30%, #fca5a5 60%, #7dd3fc 100%);
-            color: #1a1a1a;
-        }
+  .app-title {
+    font-family: 'Bangers', cursive;
+    font-size: 2.2rem;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, #FFD700, #FF3CAC, #2B86C5, #FFD700);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+    text-shadow: none;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.6));
+  }
 
-        /* Saturday - Banksy stencil art */
-        body.day-6 {
-            background:
-                repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,255,255,0.05) 30deg, transparent 60deg),
-                linear-gradient(135deg, #18181b 0%, #3f3f46 50%, #52525b 100%);
-            color: #f0f0f0;
-        }
+  @keyframes shimmer { 0% { background-position: 0% } 100% { background-position: 300% } }
 
-        /* Sunday - Street art vibrant splatter */
-        body.day-0 {
-            background:
-                radial-gradient(circle at 20% 30%, rgba(236,72,153,0.3), transparent 20%),
-                radial-gradient(circle at 80% 40%, rgba(59,130,246,0.3), transparent 25%),
-                radial-gradient(circle at 50% 70%, rgba(34,197,94,0.3), transparent 20%),
-                radial-gradient(circle at 30% 80%, rgba(251,146,60,0.3), transparent 18%),
-                radial-gradient(circle at 70% 85%, rgba(168,85,247,0.3), transparent 22%),
-                linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            color: #f0f0f0;
-        }
+  .header-right {
+    display: flex; align-items: center; gap: 12px;
+  }
 
-        .container {
-            max-width: 100%;
-            padding: 12px;
-        }
+  .date-display {
+    font-family: 'Permanent Marker', cursive;
+    color: var(--gold);
+    font-size: 0.95rem;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+  }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 0;
+    padding: 8px 20px 0;
+    position: relative; z-index: 10;
+  }
 
-        body.day-1 .header,
-        body.day-6 .header,
-        body.day-0 .header {
-            background: rgba(40,40,40,0.95);
-            color: #f0f0f0;
-        }
+  .tab-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    padding: 8px 24px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 4px;
+  }
 
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
+  .tab-btn:hover { background: rgba(255,255,255,0.15); color: white; }
 
-        .star-display {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #fbbf24;
-        }
+  .tab-btn.active {
+    background: rgba(0,0,0,0.7);
+    color: var(--gold);
+    border-color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+  }
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            justify-content: center;
-        }
+  .tab-btn.lily.active { color: #FF6EFF; border-color: #FF6EFF; text-shadow: 0 0 20px #FF6EFF; }
+  .tab-btn.rue.active  { color: #6EEFFF; border-color: #6EEFFF; text-shadow: 0 0 20px #6EEFFF; }
+  .tab-btn.cal.active  { color: #6EFF9E; border-color: #6EFF9E; text-shadow: 0 0 20px #6EFF9E; }
 
-        .tab-btn {
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px);
-            color: #1a1a1a;
-            border: 3px solid transparent;
-            padding: 12px 35px;
-            font-size: 1.5rem;
-            font-weight: 900;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  /* ── MAIN PANEL ── */
+  .main-panel {
+    position: relative; z-index: 10;
+    margin: 0 20px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(12px);
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top: 3px solid rgba(255,255,255,0.3);
+    border-radius: 0 12px 12px 12px;
+    padding: 12px 16px;
+    height: calc(100vh - 110px);
+    overflow: hidden;
+  }
 
-        body.day-1 .tab-btn,
-        body.day-6 .tab-btn,
-        body.day-0 .tab-btn {
-            background: rgba(60,60,60,0.9);
-            color: #f0f0f0;
-        }
+  .tab-content { display: none; height: 100%; }
+  .tab-content.active { display: flex; flex-direction: column; }
 
-        .tab-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+  /* ── CHILD CHORE TAB ── */
+  .chore-tab-inner {
+    display: flex;
+    gap: 12px;
+    height: 100%;
+  }
 
-        .tab-btn.active {
-            border-color: #ef4444;
-            background: rgba(239,68,68,0.9);
-            color: white;
-        }
+  /* Left: Day selector + Rewards */
+  .left-col {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-        .tab-content {
-            display: none;
-        }
+  .day-selector {
+    display: flex; flex-direction: column; gap: 4px;
+  }
 
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
+  .day-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 5px 8px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .day-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  .day-btn.active-day {
+    background: linear-gradient(90deg, rgba(255,215,0,0.25), rgba(255,60,172,0.2));
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .day-btn.weekend { border-color: rgba(110,239,255,0.3); }
 
-        .day-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+  /* Rewards box */
+  .rewards-box {
+    flex: 1;
+    background: rgba(255,215,0,0.08);
+    border: 2px solid rgba(255,215,0,0.35);
+    border-radius: 12px;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  .rewards-box::-webkit-scrollbar { width: 4px; }
+  .rewards-box::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
 
-        body.day-1 .day-section,
-        body.day-6 .day-section,
-        body.day-0 .day-section {
-            background: rgba(40,40,40,0.95);
-            color: #f0f0f0;
-        }
+  .rewards-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+    margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
 
-        .day-header {
-            font-size: 1.8rem;
-            font-weight: 900;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 3px solid #ef4444;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  .reward-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 6px;
+    margin-bottom: 3px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    border-left: 3px solid var(--gold);
+  }
 
-        .time-section {
-            margin-bottom: 15px;
-        }
+  .reward-item span { color: rgba(255,255,255,0.85); font-size: 0.78rem; flex: 1; }
+  .reward-pts {
+    font-family: 'Bangers', cursive;
+    color: var(--gold); font-size: 1rem;
+  }
 
-        .time-label {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #ef4444;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
+  /* Right: Chores */
+  .right-col {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    overflow: hidden;
+  }
 
-        .tasks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 8px;
-        }
+  .chore-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
 
-        .task-item {
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1.1rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 2px solid transparent;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+  .section-header {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+  }
+  .morning-hdr { background: linear-gradient(90deg, rgba(255,180,0,0.3), rgba(255,100,0,0.2)); color: #FFD27F; border: 1.5px solid rgba(255,180,0,0.4); }
+  .afternoon-hdr { background: linear-gradient(90deg, rgba(120,75,160,0.3), rgba(43,134,197,0.2)); color: #C4A0FF; border: 1.5px solid rgba(120,75,160,0.4); }
 
-        body.day-1 .task-item,
-        body.day-6 .task-item,
-        body.day-0 .task-item {
-            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
-            color: #f0f0f0;
-        }
+  .chore-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .chore-list::-webkit-scrollbar { width: 4px; }
+  .chore-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
 
-        .task-item:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border-color: #ef4444;
-        }
+  .chore-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
 
-        .task-item.completed {
-            background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
+  .chore-item::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 10px 0 0 10px;
+    transition: all 0.2s;
+  }
+  .morning .chore-item::before { background: #FFD27F; }
+  .afternoon .chore-item::before { background: #C4A0FF; }
 
-        body.day-1 .task-item.completed,
-        body.day-6 .task-item.completed,
-        body.day-0 .task-item.completed {
-            background: linear-gradient(135deg, #166534 0%, #15803d 100%);
-        }
+  .chore-item:hover { background: rgba(255,255,255,0.12); transform: translateX(2px); }
 
-        .task-icon {
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
+  .chore-item.done {
+    background: rgba(100,255,150,0.12);
+    border-color: rgba(100,255,150,0.4);
+  }
+  .chore-item.done .chore-name { text-decoration: line-through; color: rgba(255,255,255,0.4); }
 
-        .task-check {
-            margin-left: auto;
-            font-size: 1.2rem;
-            color: #22c55e;
-        }
+  .chore-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,0.35);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+  }
+  .chore-item.done .chore-check {
+    background: #64ff96;
+    border-color: #64ff96;
+    color: #0a0a0a;
+  }
 
-        .rewards-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+  .chore-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .chore-name { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.85); flex: 1; }
 
-        body.day-1 .rewards-section,
-        body.day-6 .rewards-section,
-        body.day-0 .rewards-section {
-            background: rgba(40,40,40,0.95);
-            color: #f0f0f0;
-        }
+  /* Stars progress */
+  .star-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 8px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(255,215,0,0.2);
+  }
+  .stars-count {
+    font-family: 'Bangers', cursive;
+    color: var(--gold); font-size: 1.1rem;
+  }
+  .star-icons { flex: 1; display: flex; flex-wrap: wrap; gap: 2px; }
+  .star-pip { font-size: 0.9rem; }
 
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 900;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #ef4444;
-        }
+  /* Edit button */
+  .edit-btn {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .edit-btn:hover { background: rgba(255,255,255,0.2); color: white; }
 
-        .rewards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px;
-        }
+  /* ── CALENDAR TAB ── */
+  .cal-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-        .reward-item {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 2px solid #fbbf24;
-        }
+  .cal-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4px;
+  }
 
-        body.day-1 .reward-item,
-        body.day-6 .reward-item,
-        body.day-0 .reward-item {
-            background: linear-gradient(135deg, #713f12 0%, #854d0e 100%);
-            border-color: #fbbf24;
-            color: #fef3c7;
-        }
+  .cal-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    color: #6EFF9E;
+    text-shadow: 0 0 20px rgba(110,255,158,0.5);
+  }
 
-        .reward-cost {
-            font-size: 1.4rem;
-            color: #f59e0b;
-            font-weight: 900;
-        }
+  .nav-btn {
+    font-size: 1.5rem;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 8px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.2); }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 10px;
-        }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    flex: 1;
+  }
 
-        .event-item {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            padding: 12px;
-            border-radius: 10px;
-            border-left: 5px solid #3b82f6;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+  .cal-day-header {
+    font-family: 'Bangers', cursive;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #6EFF9E;
+    padding: 2px;
+  }
 
-        body.day-1 .event-item,
-        body.day-6 .event-item,
-        body.day-0 .event-item {
-            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
-            color: #dbeafe;
-            border-left-color: #60a5fa;
-        }
+  .cal-cell {
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 4px;
+    min-height: 70px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cal-cell:hover { background: rgba(255,255,255,0.1); border-color: rgba(110,255,158,0.4); }
+  .cal-cell.today { border-color: #6EFF9E; background: rgba(110,255,158,0.1); }
+  .cal-cell.other-month { opacity: 0.35; }
 
-        .event-date {
-            font-weight: 900;
-            color: #3b82f6;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
+  .cal-date {
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .cal-cell.today .cal-date { color: #6EFF9E; }
 
-        body.day-1 .event-date,
-        body.day-6 .event-date,
-        body.day-0 .event-date {
-            color: #93c5fd;
-        }
+  .cal-event {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-lily { background: rgba(255,110,255,0.3); color: #FF6EFF; }
+  .event-rue  { background: rgba(110,239,255,0.3); color: #6EEFFF; }
+  .event-family { background: rgba(110,255,158,0.3); color: #6EFF9E; }
 
-        .event-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
 
-        .controls {
-            text-align: center;
-            padding: 15px;
-        }
+  .modal {
+    background: #1a1a2e;
+    border: 3px solid var(--gold);
+    border-radius: 16px;
+    padding: 20px;
+    width: 480px;
+    max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+  }
 
-        .btn {
-            background: rgba(239,68,68,0.9);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.3rem;
-            font-weight: 900;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 5px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+  .modal h2 {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
 
-        .btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+  .modal-close {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white; border-radius: 8px;
+    padding: 4px 10px; cursor: pointer; font-size: 1rem;
+  }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+  .edit-row {
+    display: flex; gap: 6px; align-items: center;
+    margin-bottom: 6px;
+  }
 
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
+  .edit-row input, .edit-row select {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+  }
+  .edit-row input::placeholder { color: rgba(255,255,255,0.3); }
 
-        .modal h2 {
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            color: #ef4444;
-            text-transform: uppercase;
-        }
+  .edit-section-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+    margin: 12px 0 6px;
+  }
 
-        .modal input,
-        .modal textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: inherit;
-        }
+  .btn-primary {
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 8px 20px;
+    border-radius: 10px;
+    border: 2px solid var(--gold);
+    background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,60,172,0.2));
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: linear-gradient(135deg, rgba(255,215,0,0.5), rgba(255,60,172,0.4)); }
 
-        .modal input:focus,
-        .modal textarea:focus {
-            outline: none;
-            border-color: #ef4444;
-        }
+  .btn-danger {
+    background: rgba(255,60,60,0.2);
+    border: 1.5px solid rgba(255,60,60,0.4);
+    color: #ff6e6e;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .btn-danger:hover { background: rgba(255,60,60,0.4); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  /* ── CLAIM REWARD BUTTON ── */
+  .claim-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255,215,0,0.5);
+    background: rgba(255,215,0,0.15);
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .claim-btn:hover { background: rgba(255,215,0,0.35); transform: scale(1.05); }
+  .claim-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* ── RESET WEEK BUTTON ── */
+  .reset-btn {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255,100,100,0.5);
+    background: rgba(255,60,60,0.15);
+    color: rgba(255,140,140,0.9);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover { background: rgba(255,60,60,0.3); color: #ff9090; }
+
+  /* ── CLAIM TOAST ── */
+  .claim-toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--gold);
+    z-index: 9999;
+    animation: toastIn 0.3s ease, toastOut 0.4s ease 2.2s forwards;
+    pointer-events: none;
+  }
+  @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(20px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+  @keyframes toastOut { to { opacity:0; transform: translateX(-50%) translateY(20px); } }
+
+  /* ── RESET CONFIRM MODAL ── */
+  .confirm-modal {
+    background: #1a1a2e;
+    border: 3px solid rgba(255,100,100,0.6);
+    border-radius: 16px;
+    padding: 24px;
+    width: 380px;
+    max-width: 95vw;
+    text-align: center;
+  }
+  .confirm-modal h2 {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: #ff9090;
+    margin-bottom: 10px;
+  }
+  .confirm-modal p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .confirm-btns { display: flex; gap: 10px; justify-content: center; }
+
+  /* ── SPARKLE ANIMATION ── */
+  @keyframes sparkle {
+    0% { transform: scale(0) rotate(0deg); opacity: 1; }
+    100% { transform: scale(3) rotate(180deg); opacity: 0; }
+  }
+  .sparkle {
+    position: fixed; pointer-events: none; z-index: 999;
+    font-size: 1.2rem; animation: sparkle 0.8s ease-out forwards;
+  }
+
+  /* ── CHILD BANNER ── */
+  .child-banner {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .child-name-big {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    letter-spacing: 3px;
+  }
+  .lily-name { 
+    color: #FF6EFF; text-shadow: 0 0 20px rgba(255,110,255,0.5), 3px 3px 0 rgba(0,0,0,0.5);
+  }
+  .rue-name { 
+    color: #6EEFFF; text-shadow: 0 0 20px rgba(110,239,255,0.5), 3px 3px 0 rgba(0,0,0,0.5);
+  }
+
+  /* Calendar add event btn */
+  .add-event-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 6px 16px;
+    border-radius: 10px;
+    border: 2px solid #6EFF9E;
+    background: rgba(110,255,158,0.15);
+    color: #6EFF9E;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .add-event-btn:hover { background: rgba(110,255,158,0.3); }
+</style>
 </head>
-<body class="day-1">
-    <div class="container">
-        <div class="header">
-            <h1>🎨 LILY & RUE'S CHORES 🎨</h1>
-            <div class="star-display" id="headerStars">⭐ 0</div>
-        </div>
+<body>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('lily')">LILY</button>
-            <button class="tab-btn" onclick="switchTab('rue')">RUE</button>
-            <button class="tab-btn" onclick="switchTab('calendar')">📅 CALENDAR</button>
-        </div>
+<header>
+  <div class="app-title">✨ CHORE STARS ✨</div>
+  <div class="header-right">
+    <div class="date-display" id="dateDisplay"></div>
+    <button class="reset-btn" onclick="openResetConfirm()">🔄 New Week</button>
+  </div>
+</header>
 
-        <div id="lily-content" class="tab-content active">
-            <div id="lilyChores"></div>
-            <div class="rewards-section">
-                <div class="section-title">🎁 LILY'S REWARDS</div>
-                <div class="rewards-grid" id="lilyRewards"></div>
-            </div>
-        </div>
+<div class="tabs">
+  <button class="tab-btn lily active" onclick="switchTab('lily')">🌸 LILY</button>
+  <button class="tab-btn rue"  onclick="switchTab('rue')">💙 RUE</button>
+  <button class="tab-btn cal"  onclick="switchTab('cal')">📅 FAMILY</button>
+</div>
 
-        <div id="rue-content" class="tab-content">
-            <div id="rueChores"></div>
-            <div class="rewards-section">
-                <div class="section-title">🎁 RUE'S REWARDS</div>
-                <div class="rewards-grid" id="rueRewards"></div>
-            </div>
-        </div>
+<div class="main-panel">
 
-        <div id="calendar-content" class="tab-content">
-            <div class="rewards-section">
-                <div class="section-title">📅 FAMILY CALENDAR</div>
-                <div class="calendar-grid" id="calendarEvents"></div>
-            </div>
-            <div class="controls">
-                <button class="btn" onclick="openEventModal()">➕ ADD EVENT</button>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="btn" onclick="openEditModal()">✏️ EDIT CHORES</button>
-            <button class="btn" onclick="openRewardModal()">🎁 EDIT REWARDS</button>
-            <button class="btn" onclick="resetWeek()">🔄 RESET WEEK</button>
-        </div>
+  <!-- ═══════ LILY TAB ═══════ -->
+  <div class="tab-content active" id="tab-lily">
+    <div class="child-banner">
+      <span class="child-name-big lily-name">🌸 LILY</span>
+      <button class="edit-btn" onclick="openEditChores('lily')">✏️ Edit Chores</button>
+      <button class="edit-btn" onclick="openEditRewards('lily')">🏆 Edit Rewards</button>
+      <div style="margin-left:auto;" id="lily-star-bar"></div>
     </div>
-
-    <!-- Edit Chores Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <h2>Edit <span id="editChildName"></span>'s Chores</h2>
-            <p style="margin-bottom: 15px; font-weight: 600;">One task per line. Format: Task name ⭐stars</p>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKDAY MORNING:</label>
-            <textarea id="weekdayMorning" rows="8"></textarea>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKDAY AFTERNOON:</label>
-            <textarea id="weekdayAfternoon" rows="5"></textarea>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKEND MORNING:</label>
-            <textarea id="weekendMorning" rows="6"></textarea>
-            
-            <label style="font-weight: 700; margin-top: 10px; display: block;">WEEKEND AFTERNOON:</label>
-            <textarea id="weekendAfternoon" rows="5"></textarea>
-            
-            <button class="btn" onclick="saveChoreChanges()">SAVE</button>
-            <button class="btn" onclick="closeModal('editModal')" style="background: #6b7280;">CANCEL</button>
+    <div class="chore-tab-inner">
+      <div class="left-col">
+        <div class="day-selector" id="lily-days"></div>
+        <div class="rewards-box">
+          <div class="rewards-title">🏆 REWARDS <span style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:Nunito">pts</span></div>
+          <div id="lily-rewards-list"></div>
         </div>
-    </div>
-
-    <!-- Edit Rewards Modal -->
-    <div id="rewardModal" class="modal">
-        <div class="modal-content">
-            <h2>Edit Rewards</h2>
-            <label style="font-weight: 700; display: block; margin-bottom: 10px;">LILY'S REWARDS (format: Reward ⭐cost):</label>
-            <textarea id="lilyRewardsInput" rows="6"></textarea>
-            
-            <label style="font-weight: 700; display: block; margin: 15px 0 10px;">RUE'S REWARDS:</label>
-            <textarea id="rueRewardsInput" rows="6"></textarea>
-            
-            <button class="btn" onclick="saveRewardChanges()">SAVE</button>
-            <button class="btn" onclick="closeModal('rewardModal')" style="background: #6b7280;">CANCEL</button>
+      </div>
+      <div class="right-col">
+        <div class="chore-section morning">
+          <div class="section-header morning-hdr">☀️ MORNING</div>
+          <div class="chore-list" id="lily-morning-list"></div>
         </div>
-    </div>
-
-    <!-- Add Event Modal -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <h2>Add Family Event</h2>
-            <input type="date" id="eventDate">
-            <input type="text" id="eventTitle" placeholder="Event name">
-            <input type="text" id="eventDetails" placeholder="Time/Details (optional)">
-            <button class="btn" onclick="saveEvent()">ADD EVENT</button>
-            <button class="btn" onclick="closeModal('eventModal')" style="background: #6b7280;">CANCEL</button>
+        <div class="chore-section afternoon">
+          <div class="section-header afternoon-hdr">🌙 AFTERNOON</div>
+          <div class="chore-list" id="lily-afternoon-list"></div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        const weekendDays = ['Saturday', 'Sunday'];
-        let currentTab = 'lily';
-        let editingChild = 'lily';
+  <!-- ═══════ RUE TAB ═══════ -->
+  <div class="tab-content" id="tab-rue">
+    <div class="child-banner">
+      <span class="child-name-big rue-name">💙 RUE</span>
+      <button class="edit-btn" onclick="openEditChores('rue')">✏️ Edit Chores</button>
+      <button class="edit-btn" onclick="openEditRewards('rue')">🏆 Edit Rewards</button>
+      <div style="margin-left:auto;" id="rue-star-bar"></div>
+    </div>
+    <div class="chore-tab-inner">
+      <div class="left-col">
+        <div class="day-selector" id="rue-days"></div>
+        <div class="rewards-box">
+          <div class="rewards-title">🏆 REWARDS</div>
+          <div id="rue-rewards-list"></div>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="chore-section morning">
+          <div class="section-header morning-hdr">☀️ MORNING</div>
+          <div class="chore-list" id="rue-morning-list"></div>
+        </div>
+        <div class="chore-section afternoon">
+          <div class="section-header afternoon-hdr">🌙 AFTERNOON</div>
+          <div class="chore-list" id="rue-afternoon-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        const taskIcons = {
-            'toilet': '🚽', 'eat': '🍽️', 'breakfast': '🥐', 'brush teeth': '🪥', 
-            'teeth': '🪥', 'dressed': '👕', 'get dressed': '👕', 'hair': '💇',
-            'brush hair': '💇', 'feed': '🐾', 'animals': '🐾', 'lunchbox': '🍱',
-            'pack lunchbox': '🍱', 'bag': '🎒', 'pack bag': '🎒', 'unpack bag': '🎒',
-            'unpack': '📦', 'tidy': '🧹', 'room': '🛏️', 'tidy room': '🧹',
-            'dishwasher': '🍽️', 'dishes': '🍽️'
-        };
+  <!-- ═══════ CALENDAR TAB ═══════ -->
+  <div class="tab-content" id="tab-cal">
+    <div class="cal-inner">
+      <div class="cal-nav">
+        <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+        <div class="cal-title" id="calTitle"></div>
+        <button class="add-event-btn" onclick="openAddEvent()">+ ADD EVENT</button>
+        <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <!-- legend -->
+      <div style="display:flex;gap:12px;padding:2px 4px;">
+        <span style="font-size:0.72rem;color:#FF6EFF">🌸 Lily</span>
+        <span style="font-size:0.72rem;color:#6EEFFF">💙 Rue</span>
+        <span style="font-size:0.72rem;color:#6EFF9E">👨‍👩‍👧 Family</span>
+      </div>
+    </div>
+  </div>
 
-        function getIcon(taskName) {
-            const lower = taskName.toLowerCase();
-            for (let key in taskIcons) {
-                if (lower.includes(key)) return taskIcons[key];
-            }
-            return '✨';
-        }
+</div>
 
-        let data = {
-            lily: {
-                stars: 0,
-                weekdayMorning: [
-                    'Eat breakfast ⭐1', 'Brush teeth ⭐1', 'Get dressed ⭐1',
-                    'Brush hair ⭐1', 'Feed animals ⭐2', 'Pack lunchbox ⭐1',
-                    'Pack bag ⭐1'
-                ],
-                weekdayAfternoon: [
-                    'Unpack bag ⭐1', 'Tidy room ⭐2', 'Unpack dishwasher ⭐2',
-                    'Feed animals ⭐2'
-                ],
-                weekendMorning: [
-                    'Eat breakfast ⭐1', 'Brush teeth ⭐1', 'Get dressed ⭐1',
-                    'Brush hair ⭐1', 'Feed animals ⭐2'
-                ],
-                weekendAfternoon: [
-                    'Tidy room ⭐2', 'Unpack dishwasher ⭐2', 'Feed animals ⭐2'
-                ],
-                completed: {
-                    Monday: { morning: [], afternoon: [] },
-                    Tuesday: { morning: [], afternoon: [] },
-                    Wednesday: { morning: [], afternoon: [] },
-                    Thursday: { morning: [], afternoon: [] },
-                    Friday: { morning: [], afternoon: [] },
-                    Saturday: { morning: [], afternoon: [] },
-                    Sunday: { morning: [], afternoon: [] }
-                },
-                rewards: [
-                    '30 min screen time ⭐5',
-                    'Choose dinner ⭐10',
-                    'Movie pick ⭐15',
-                    'Special treat ⭐20'
-                ]
-            },
-            rue: {
-                stars: 0,
-                weekdayMorning: [
-                    'Toilet ⭐1', 'Eat breakfast ⭐1', 'Brush teeth ⭐1',
-                    'Get dressed ⭐1', 'Brush hair ⭐1', 'Feed animals ⭐2',
-                    'Pack lunchbox ⭐1', 'Pack bag ⭐1'
-                ],
-                weekdayAfternoon: [
-                    'Unpack bag ⭐1', 'Tidy room ⭐2', 'Unpack dishwasher ⭐2',
-                    'Feed animals ⭐2'
-                ],
-                weekendMorning: [
-                    'Toilet ⭐1', 'Eat breakfast ⭐1', 'Brush teeth ⭐1',
-                    'Get dressed ⭐1', 'Brush hair ⭐1', 'Feed animals ⭐2'
-                ],
-                weekendAfternoon: [
-                    'Tidy room ⭐2', 'Unpack dishwasher ⭐2', 'Feed animals ⭐2'
-                ],
-                completed: {
-                    Monday: { morning: [], afternoon: [] },
-                    Tuesday: { morning: [], afternoon: [] },
-                    Wednesday: { morning: [], afternoon: [] },
-                    Thursday: { morning: [], afternoon: [] },
-                    Friday: { morning: [], afternoon: [] },
-                    Saturday: { morning: [], afternoon: [] },
-                    Sunday: { morning: [], afternoon: [] }
-                },
-                rewards: [
-                    'Extra story ⭐5',
-                    'Park trip ⭐10',
-                    'Ice cream ⭐12',
-                    'Special outing ⭐20'
-                ]
-            },
-            events: []
-        };
+<!-- ══ MODALS ══ -->
 
-        function getDayOfWeek() {
-            return new Date().getDay();
-        }
+<!-- Reset Confirm Modal -->
+<div class="modal-overlay" id="resetConfirmModal">
+  <div class="confirm-modal">
+    <h2>🔄 NEW WEEK?</h2>
+    <p>This will clear all ticked chores for both Lily and Rue.<br>
+    <strong style="color:var(--gold)">⭐ Star totals and claimed rewards are kept!</strong></p>
+    <div class="confirm-btns">
+      <button class="btn-primary" onclick="confirmReset()" style="border-color:#ff9090;color:#ff9090;background:rgba(255,100,100,0.2)">✅ Yes, Reset Week</button>
+      <button class="btn-primary" onclick="closeModal('resetConfirmModal')">❌ Cancel</button>
+    </div>
+  </div>
+</div>
 
-        function updateBackground() {
-            document.body.className = 'day-' + getDayOfWeek();
-        }
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tab + '-content').classList.add('active');
-            
-            if (tab !== 'calendar') {
-                updateHeaderStars();
-            }
-        }
+<div class="modal-overlay" id="editChoresModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editChoresModal')">✕</button>
+    <h2 id="editChoresTitle">✏️ EDIT CHORES</h2>
+    <div class="edit-section-title">☀️ Morning Chores</div>
+    <div id="editMorningList"></div>
+    <div class="edit-row" style="margin-top:6px;">
+      <input id="newMorningIcon" placeholder="Icon 🦷" style="width:60px;flex:none">
+      <input id="newMorningName" placeholder="New morning chore...">
+      <button class="btn-primary" onclick="addChore('morning')">+ ADD</button>
+    </div>
+    <div class="edit-section-title">🌙 Afternoon Chores</div>
+    <div id="editAfternoonList"></div>
+    <div class="edit-row" style="margin-top:6px;">
+      <input id="newAfternoonIcon" placeholder="Icon 📚" style="width:60px;flex:none">
+      <input id="newAfternoonName" placeholder="New afternoon chore...">
+      <button class="btn-primary" onclick="addChore('afternoon')">+ ADD</button>
+    </div>
+    <div style="margin-top:14px;font-size:0.75rem;color:rgba(255,255,255,0.4)">
+      💡 Weekend chores are the same but Pack Lunchbox, Pack Bag & Unpack Bag are auto-hidden on Sat/Sun for Rue.
+    </div>
+    <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+      <button class="btn-primary" onclick="saveChores()">💾 SAVE</button>
+    </div>
+  </div>
+</div>
 
-        function updateHeaderStars() {
-            const child = data[currentTab];
-            document.getElementById('headerStars').textContent = `⭐ ${child.stars}`;
-        }
+<!-- Edit Rewards Modal -->
+<div class="modal-overlay" id="editRewardsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editRewardsModal')">✕</button>
+    <h2 id="editRewardsTitle">🏆 EDIT REWARDS</h2>
+    <div id="editRewardsList"></div>
+    <div class="edit-row" style="margin-top:8px;">
+      <input id="newRewardName" placeholder="Reward name...">
+      <input id="newRewardPts" placeholder="⭐ pts" style="width:80px;flex:none" type="number">
+      <button class="btn-primary" onclick="addReward()">+ ADD</button>
+    </div>
+    <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+      <button class="btn-primary" onclick="saveRewards()">💾 SAVE</button>
+    </div>
+  </div>
+</div>
 
-        function parseTask(taskStr) {
-            const match = taskStr.match(/(.+?)\s*⭐(\d+)/);
-            if (match) {
-                return { name: match[1].trim(), stars: parseInt(match[2]) };
-            }
-            return { name: taskStr.trim(), stars: 1 };
-        }
+<!-- Add Event Modal -->
+<div class="modal-overlay" id="addEventModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addEventModal')">✕</button>
+    <h2>📅 ADD EVENT</h2>
+    <div class="edit-row">
+      <input id="eventDate" type="date">
+    </div>
+    <div class="edit-row">
+      <input id="eventText" placeholder="Event description...">
+    </div>
+    <div class="edit-row">
+      <select id="eventType">
+        <option value="family">👨‍👩‍👧 Family</option>
+        <option value="lily">🌸 Lily</option>
+        <option value="rue">💙 Rue</option>
+      </select>
+    </div>
+    <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+      <button class="btn-primary" onclick="saveEvent()">💾 SAVE</button>
+    </div>
+  </div>
+</div>
 
-        function renderChild(childName) {
-            const child = data[childName];
-            const container = document.getElementById(childName + 'Chores');
-            
-            let html = '';
-            const allDays = [...weekdays, ...weekendDays];
-            
-            allDays.forEach(day => {
-                const isWeekend = weekendDays.includes(day);
-                const morningTasks = isWeekend ? child.weekendMorning : child.weekdayMorning;
-                const afternoonTasks = isWeekend ? child.weekendAfternoon : child.weekdayAfternoon;
-                
-                html += `<div class="day-section">
-                    <div class="day-header">${day}</div>
-                    <div class="time-section">
-                        <div class="time-label">☀️ MORNING</div>
-                        <div class="tasks-grid">`;
-                
-                morningTasks.forEach((taskStr, idx) => {
-                    const task = parseTask(taskStr);
-                    const isCompleted = child.completed[day].morning.includes(idx);
-                    html += `
-                        <div class="task-item ${isCompleted ? 'completed' : ''}" 
-                             onclick="toggleTask('${childName}', '${day}', 'morning', ${idx})">
-                            <span class="task-icon">${getIcon(task.name)}</span>
-                            <span>${task.name}</span>
-                            ${isCompleted ? '<span class="task-check">✓</span>' : ''}
-                        </div>`;
-                });
-                
-                html += `</div></div><div class="time-section">
-                    <div class="time-label">🌙 AFTERNOON</div>
-                    <div class="tasks-grid">`;
-                
-                afternoonTasks.forEach((taskStr, idx) => {
-                    const task = parseTask(taskStr);
-                    const isCompleted = child.completed[day].afternoon.includes(idx);
-                    html += `
-                        <div class="task-item ${isCompleted ? 'completed' : ''}" 
-                             onclick="toggleTask('${childName}', '${day}', 'afternoon', ${idx})">
-                            <span class="task-icon">${getIcon(task.name)}</span>
-                            <span>${task.name}</span>
-                            ${isCompleted ? '<span class="task-check">✓</span>' : ''}
-                        </div>`;
-                });
-                
-                html += `</div></div></div>`;
-            });
-            
-            container.innerHTML = html;
-        }
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const WEEKEND = [5,6]; // index in DAYS
 
-        function toggleTask(childName, day, timeOfDay, taskIdx) {
-            const child = data[childName];
-            const completed = child.completed[day][timeOfDay];
-            const taskList = weekendDays.includes(day) ? 
-                (timeOfDay === 'morning' ? child.weekendMorning : child.weekendAfternoon) :
-                (timeOfDay === 'morning' ? child.weekdayMorning : child.weekdayAfternoon);
-            
-            const task = parseTask(taskList[taskIdx]);
-            const idx = completed.indexOf(taskIdx);
-            
-            if (idx > -1) {
-                completed.splice(idx, 1);
-                child.stars -= task.stars;
-            } else {
-                completed.push(taskIdx);
-                child.stars += task.stars;
-            }
-            
-            save();
-            renderChild(childName);
-            renderRewards(childName);
-            updateHeaderStars();
-        }
+// Chores: weekdayOnly = true means hidden on weekend
+const DEFAULT_CHORES = {
+  lily: {
+    morning: [
+      {icon:'🥣', name:'Eat Breakfast', weekdayOnly:false},
+      {icon:'🦷', name:'Brush Teeth', weekdayOnly:false},
+      {icon:'👗', name:'Get Dressed', weekdayOnly:false},
+      {icon:'💇', name:'Brush Hair', weekdayOnly:false},
+      {icon:'🐾', name:'Feed Animals', weekdayOnly:false},
+      {icon:'🎒', name:'Pack Bag', weekdayOnly:true},
+      {icon:'🥪', name:'Pack Lunchbox', weekdayOnly:true},
+    ],
+    afternoon: [
+      {icon:'🎒', name:'Unpack Bag', weekdayOnly:true},
+      {icon:'🧹', name:'Tidy Room', weekdayOnly:false},
+      {icon:'🍽️', name:'Unpack Dishwasher', weekdayOnly:false},
+      {icon:'🐾', name:'Feed Animals', weekdayOnly:false},
+    ]
+  },
+  rue: {
+    morning: [
+      {icon:'🚽', name:'Toilet', weekdayOnly:false},
+      {icon:'🥣', name:'Eat Breakfast', weekdayOnly:false},
+      {icon:'🦷', name:'Brush Teeth', weekdayOnly:false},
+      {icon:'👗', name:'Get Dressed', weekdayOnly:false},
+      {icon:'💇', name:'Brush Hair', weekdayOnly:false},
+      {icon:'🐾', name:'Feed Animals', weekdayOnly:false},
+      {icon:'🎒', name:'Pack Bag', weekdayOnly:true},
+      {icon:'🥪', name:'Pack Lunchbox', weekdayOnly:true},
+    ],
+    afternoon: [
+      {icon:'🎒', name:'Unpack Bag', weekdayOnly:true},
+      {icon:'🧹', name:'Tidy Room', weekdayOnly:false},
+      {icon:'🍽️', name:'Unpack Dishwasher', weekdayOnly:false},
+      {icon:'🐾', name:'Feed Animals', weekdayOnly:false},
+    ]
+  }
+};
 
-        function renderRewards(childName) {
-            const child = data[childName];
-            const container = document.getElementById(childName + 'Rewards');
-            
-            let html = '';
-            child.rewards.forEach(rewardStr => {
-                const match = rewardStr.match(/(.+?)\s*⭐(\d+)/);
-                const name = match ? match[1].trim() : rewardStr;
-                const cost = match ? match[2] : '5';
-                html += `
-                    <div class="reward-item">
-                        <span>${name}</span>
-                        <span class="reward-cost">⭐${cost}</span>
-                    </div>`;
-            });
-            
-            container.innerHTML = html;
-        }
+const DEFAULT_REWARDS = {
+  lily: [
+    {name:'Extra Screen Time (30min)', pts:5},
+    {name:'Choose Dinner', pts:7},
+    {name:'Movie Night Pick', pts:10},
+    {name:'Stay Up 30min Late', pts:8},
+    {name:'Special Outing', pts:20},
+  ],
+  rue: [
+    {name:'Extra Screen Time (30min)', pts:5},
+    {name:'Choose Dinner', pts:7},
+    {name:'Movie Night Pick', pts:10},
+    {name:'Stay Up 30min Late', pts:8},
+    {name:'Special Outing', pts:20},
+  ]
+};
 
-        function renderCalendar() {
-            const container = document.getElementById('calendarEvents');
-            
-            if (data.events.length === 0) {
-                container.innerHTML = '<p style="text-align: center; padding: 30px; font-size: 1.3rem;">No events scheduled</p>';
-                return;
-            }
-            
-            data.events.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            let html = '';
-            data.events.forEach((event, idx) => {
-                const date = new Date(event.date);
-                const formatted = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                html += `
-                    <div class="event-item" onclick="deleteEvent(${idx})">
-                        <div class="event-date">${formatted}</div>
-                        <div class="event-title">${event.title}</div>
-                        ${event.details ? `<div style="margin-top: 5px; opacity: 0.8;">${event.details}</div>` : ''}
-                    </div>`;
-            });
-            
-            container.innerHTML = html;
-        }
+// ── State ──
+let state = {
+  chores: JSON.parse(localStorage.getItem('chores') || 'null') || JSON.parse(JSON.stringify(DEFAULT_CHORES)),
+  rewards: JSON.parse(localStorage.getItem('rewards') || 'null') || JSON.parse(JSON.stringify(DEFAULT_REWARDS)),
+  checked: JSON.parse(localStorage.getItem('checked') || '{}'),
+  events: JSON.parse(localStorage.getItem('events') || '[]'),
+  starBank: JSON.parse(localStorage.getItem('starBank') || '{"lily":0,"rue":0}'),
+  selectedDay: { lily: getTodayIndex(), rue: getTodayIndex() },
+  calMonth: new Date().getMonth(),
+  calYear: new Date().getFullYear(),
+  editingChild: 'lily'
+};
 
-        function openEditModal() {
-            editingChild = currentTab === 'calendar' ? 'lily' : currentTab;
-            const child = data[editingChild];
-            
-            document.getElementById('editChildName').textContent = editingChild.toUpperCase();
-            document.getElementById('weekdayMorning').value = child.weekdayMorning.join('\n');
-            document.getElementById('weekdayAfternoon').value = child.weekdayAfternoon.join('\n');
-            document.getElementById('weekendMorning').value = child.weekendMorning.join('\n');
-            document.getElementById('weekendAfternoon').value = child.weekendAfternoon.join('\n');
-            
-            document.getElementById('editModal').style.display = 'flex';
-        }
+function getTodayIndex() {
+  const d = new Date().getDay(); // 0=Sun,1=Mon...6=Sat
+  return d === 0 ? 6 : d - 1;
+}
 
-        function saveChoreChanges() {
-            const child = data[editingChild];
-            
-            child.weekdayMorning = document.getElementById('weekdayMorning').value.split('\n').filter(l => l.trim());
-            child.weekdayAfternoon = document.getElementById('weekdayAfternoon').value.split('\n').filter(l => l.trim());
-            child.weekendMorning = document.getElementById('weekendMorning').value.split('\n').filter(l => l.trim());
-            child.weekendAfternoon = document.getElementById('weekendAfternoon').value.split('\n').filter(l => l.trim());
-            
-            // Reset completed tasks
-            Object.keys(child.completed).forEach(day => {
-                child.completed[day] = { morning: [], afternoon: [] };
-            });
-            
-            save();
-            renderChild(editingChild);
-            closeModal('editModal');
-        }
+function save() {
+  localStorage.setItem('chores', JSON.stringify(state.chores));
+  localStorage.setItem('rewards', JSON.stringify(state.rewards));
+  localStorage.setItem('checked', JSON.stringify(state.checked));
+  localStorage.setItem('events', JSON.stringify(state.events));
+  localStorage.setItem('starBank', JSON.stringify(state.starBank));
+}
 
-        function openRewardModal() {
-            document.getElementById('lilyRewardsInput').value = data.lily.rewards.join('\n');
-            document.getElementById('rueRewardsInput').value = data.rue.rewards.join('\n');
-            document.getElementById('rewardModal').style.display = 'flex';
-        }
+// ── Daily background ──
+function applyDayBackground() {
+  const d = new Date().getDay();
+  document.body.className = 'day-' + d;
+}
 
-        function saveRewardChanges() {
-            data.lily.rewards = document.getElementById('lilyRewardsInput').value.split('\n').filter(l => l.trim());
-            data.rue.rewards = document.getElementById('rueRewardsInput').value.split('\n').filter(l => l.trim());
-            
-            save();
-            renderRewards('lily');
-            renderRewards('rue');
-            closeModal('rewardModal');
-        }
+// ── Date display ──
+function updateDateDisplay() {
+  const now = new Date();
+  const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+  document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-GB', opts);
+}
 
-        function openEventModal() {
-            document.getElementById('eventDate').value = '';
-            document.getElementById('eventTitle').value = '';
-            document.getElementById('eventDetails').value = '';
-            document.getElementById('eventModal').style.display = 'flex';
-        }
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
 
-        function saveEvent() {
-            const date = document.getElementById('eventDate').value;
-            const title = document.getElementById('eventTitle').value;
-            const details = document.getElementById('eventDetails').value;
-            
-            if (!date || !title) {
-                alert('Please enter a date and event name');
-                return;
-            }
-            
-            data.events.push({ date, title, details });
-            save();
-            renderCalendar();
-            closeModal('eventModal');
-        }
+function renderChild(child) {
+  renderDaySelector(child);
+  renderChores(child);
+  renderRewards(child);
+  renderStarBar(child);
+}
 
-        function deleteEvent(idx) {
-            if (confirm('Delete this event?')) {
-                data.events.splice(idx, 1);
-                save();
-                renderCalendar();
-            }
-        }
+function renderDaySelector(child) {
+  const container = document.getElementById(child + '-days');
+  container.innerHTML = '';
+  DAYS.forEach((day, i) => {
+    const isWeekend = WEEKEND.includes(i);
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (isWeekend ? ' weekend' : '') + (state.selectedDay[child] === i ? ' active-day' : '');
+    const key = child + '_' + i;
+    const total = countTotal(child, i);
+    const done = countDone(child, i);
+    btn.innerHTML = `${day.slice(0,3)} <span style="float:right;font-size:0.75rem;color:${done===total?'#64ff96':'rgba(255,255,255,0.4)'}">${done}/${total}</span>`;
+    btn.onclick = () => { state.selectedDay[child] = i; renderChild(child); };
+    container.appendChild(btn);
+  });
+}
 
-        function resetWeek() {
-            if (confirm('Reset all tasks for the week? Stars will be kept.')) {
-                ['lily', 'rue'].forEach(child => {
-                    Object.keys(data[child].completed).forEach(day => {
-                        data[child].completed[day] = { morning: [], afternoon: [] };
-                    });
-                });
-                save();
-                renderChild('lily');
-                renderChild('rue');
-            }
-        }
+function getVisibleChores(child, period, dayIndex) {
+  const isWeekend = WEEKEND.includes(dayIndex);
+  return state.chores[child][period].filter(c => !(isWeekend && c.weekdayOnly));
+}
 
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+function countTotal(child, dayIndex) {
+  return getVisibleChores(child, 'morning', dayIndex).length +
+         getVisibleChores(child, 'afternoon', dayIndex).length;
+}
 
-        function save() {
-            localStorage.setItem('lilyRueChores', JSON.stringify(data));
-        }
+function countDone(child, dayIndex) {
+  const key = child + '_' + dayIndex;
+  const checked = state.checked[key] || {};
+  let count = 0;
+  ['morning','afternoon'].forEach(p => {
+    getVisibleChores(child, p, dayIndex).forEach(c => {
+      if (checked[p + '_' + c.name]) count++;
+    });
+  });
+  return count;
+}
 
-        function load() {
-            const saved = localStorage.getItem('lilyRueChores');
-            if (saved) {
-                data = JSON.parse(saved);
-            }
-        }
+function renderChores(child) {
+  const dayIndex = state.selectedDay[child];
+  ['morning','afternoon'].forEach(period => {
+    const list = document.getElementById(child + '-' + period + '-list');
+    list.innerHTML = '';
+    const key = child + '_' + dayIndex;
+    const checked = state.checked[key] || {};
+    const chores = getVisibleChores(child, period, dayIndex);
+    chores.forEach((chore, i) => {
+      const ck = period + '_' + chore.name;
+      const done = !!checked[ck];
+      const item = document.createElement('div');
+      item.className = 'chore-item' + (done ? ' done' : '');
+      item.innerHTML = `
+        <div class="chore-check">${done ? '✓' : ''}</div>
+        <div class="chore-icon">${chore.icon}</div>
+        <div class="chore-name">${chore.name}</div>
+      `;
+      item.onclick = (e) => toggleChore(child, dayIndex, period, chore.name, e);
+      list.appendChild(item);
+    });
+  });
+  renderStarBar(child);
+}
 
-        // Initialize
-        load();
-        updateBackground();
-        renderChild('lily');
-        renderChild('rue');
-        renderRewards('lily');
-        renderRewards('rue');
-        renderCalendar();
-        updateHeaderStars();
-        
-        setInterval(save, 30000);
-        
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
-    </script>
+function renderRewards(child) {
+  const list = document.getElementById(child + '-rewards-list');
+  list.innerHTML = '';
+  const avail = state.starBank[child];
+  state.rewards[child].forEach((r, i) => {
+    const canAfford = avail >= r.pts;
+    const item = document.createElement('div');
+    item.className = 'reward-item';
+    item.innerHTML = `
+      <span>${r.name}</span>
+      <span class="reward-pts">⭐${r.pts}</span>
+      <button class="claim-btn" ${canAfford ? '' : 'disabled'} onclick="claimReward('${child}', ${i}, event)">CLAIM</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function renderStarBar(child) {
+  const total = state.starBank[child];
+  const bar = document.getElementById(child + '-star-bar');
+  const starDisplay = Math.min(total, 20);
+  let html = `<div class="star-bar"><span class="stars-count">⭐ ${total} available</span><div class="star-icons">`;
+  for (let i = 0; i < starDisplay; i++) html += `<span class="star-pip">⭐</span>`;
+  if (total > 20) html += `<span style="color:var(--gold);font-size:0.75rem;font-family:'Bangers'"> +${total-20}</span>`;
+  html += `</div></div>`;
+  bar.innerHTML = html;
+}
+
+function getTotalStars(child) {
+  return state.starBank[child] || 0;
+}
+
+function toggleChore(child, dayIndex, period, choreName, e) {
+  const key = child + '_' + dayIndex;
+  if (!state.checked[key]) state.checked[key] = {};
+  const ck = period + '_' + choreName;
+  const wasDone = !!state.checked[key][ck];
+  state.checked[key][ck] = !wasDone;
+  // Update star bank
+  if (!wasDone) {
+    state.starBank[child] = (state.starBank[child] || 0) + 1;
+  } else {
+    state.starBank[child] = Math.max(0, (state.starBank[child] || 0) - 1);
+  }
+  save();
+  renderChores(child);
+  renderDaySelector(child);
+  renderRewards(child);
+  if (!wasDone) spawnSparkle(e);
+}
+
+function spawnSparkle(e) {
+  const sparkles = ['⭐','✨','🌟','💫','🎉'];
+  for (let i = 0; i < 5; i++) {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    el.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+    el.style.left = (e.clientX + (Math.random()-0.5)*60) + 'px';
+    el.style.top = (e.clientY + (Math.random()-0.5)*60) + 'px';
+    el.style.animationDelay = (i * 0.1) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  }
+}
+
+function claimReward(child, rewardIndex, e) {
+  const reward = state.rewards[child][rewardIndex];
+  if (state.starBank[child] < reward.pts) return;
+  state.starBank[child] -= reward.pts;
+  save();
+  renderRewards(child);
+  renderStarBar(child);
+  // Big celebration sparkles
+  for (let i = 0; i < 15; i++) {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    el.textContent = ['🏆','🎉','⭐','🌟','✨','🎊'][Math.floor(Math.random()*6)];
+    el.style.left = (Math.random() * window.innerWidth) + 'px';
+    el.style.top = (Math.random() * window.innerHeight) + 'px';
+    el.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1200);
+  }
+  showToast(`🏆 ${child.charAt(0).toUpperCase()+child.slice(1)} claimed: ${reward.name}! (-${reward.pts}⭐)`);
+}
+
+function showToast(msg) {
+  const el = document.createElement('div');
+  el.className = 'claim-toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2700);
+}
+
+function openResetConfirm() {
+  openModal('resetConfirmModal');
+}
+
+function confirmReset() {
+  // Clear all checked chores but keep star banks and events
+  state.checked = {};
+  save();
+  renderChild('lily');
+  renderChild('rue');
+  closeModal('resetConfirmModal');
+  showToast('🔄 New week started! Chores reset for Lily & Rue.');
+}
+
+// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+
+function renderCalendar() {
+  const { calMonth, calYear } = state;
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calTitle').textContent = MONTH_NAMES[calMonth] + ' ' + calYear;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // Headers
+  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'cal-day-header'; h.textContent = d;
+    grid.appendChild(h);
+  });
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+  const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrevMonth = new Date(calYear, calMonth, 0).getDate();
+
+  const today = new Date();
+  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+  for (let i = 0; i < totalCells; i++) {
+    const cell = document.createElement('div');
+    let date, month, year, otherMonth = false;
+
+    if (i < startOffset) {
+      date = daysInPrevMonth - startOffset + i + 1;
+      month = calMonth === 0 ? 11 : calMonth - 1;
+      year = calMonth === 0 ? calYear - 1 : calYear;
+      otherMonth = true;
+    } else if (i >= startOffset + daysInMonth) {
+      date = i - startOffset - daysInMonth + 1;
+      month = calMonth === 11 ? 0 : calMonth + 1;
+      year = calMonth === 11 ? calYear + 1 : calYear;
+      otherMonth = true;
+    } else {
+      date = i - startOffset + 1;
+      month = calMonth; year = calYear;
+    }
+
+    cell.className = 'cal-cell' + (otherMonth ? ' other-month' : '');
+    const isToday = date === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    if (isToday) cell.classList.add('today');
+
+    const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(date).padStart(2,'0');
+    cell.innerHTML = `<div class="cal-date">${date}</div>`;
+
+    // Events
+    state.events.filter(e => e.date === dateStr).forEach(ev => {
+      const tag = document.createElement('div');
+      tag.className = 'cal-event event-' + ev.type;
+      const icons = {lily:'🌸',rue:'💙',family:'👨‍👩‍👧'};
+      tag.textContent = icons[ev.type] + ' ' + ev.text;
+      tag.title = 'Click to delete';
+      const evRef = ev;
+      tag.onclick = (e) => { e.stopPropagation(); if(confirm('Delete "'+evRef.text+'"?')) { state.events = state.events.filter(x=>x!==evRef); save(); renderCalendar(); } };
+      cell.appendChild(tag);
+    });
+
+    // Click to add event on that date
+    cell.onclick = () => { document.getElementById('eventDate').value = dateStr; openModal('addEventModal'); };
+    grid.appendChild(cell);
+  }
+}
+
+function changeMonth(dir) {
+  state.calMonth += dir;
+  if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; }
+  if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; }
+  renderCalendar();
+}
+
+// ═══════════════════════════════════════════
+// EDIT MODALS
+// ═══════════════════════════════════════════
+
+function openEditChores(child) {
+  state.editingChild = child;
+  document.getElementById('editChoresTitle').textContent = `✏️ ${child.toUpperCase()}'S CHORES`;
+  populateEditChores();
+  openModal('editChoresModal');
+}
+
+function populateEditChores() {
+  const child = state.editingChild;
+  ['morning','afternoon'].forEach(period => {
+    const list = document.getElementById('edit' + period.charAt(0).toUpperCase() + period.slice(1) + 'List');
+    list.innerHTML = '';
+    state.chores[child][period].forEach((c, i) => {
+      const row = document.createElement('div');
+      row.className = 'edit-row';
+      row.innerHTML = `
+        <input value="${c.icon}" style="width:60px;flex:none" onchange="state.chores['${child}']['${period}'][${i}].icon=this.value">
+        <input value="${c.name}" onchange="state.chores['${child}']['${period}'][${i}].name=this.value">
+        <label style="color:rgba(255,255,255,0.5);font-size:0.75rem;white-space:nowrap">
+          <input type="checkbox" ${c.weekdayOnly?'checked':''} onchange="state.chores['${child}']['${period}'][${i}].weekdayOnly=this.checked"> School days only
+        </label>
+        <button class="btn-danger" onclick="removeChore('${period}',${i})">✕</button>
+      `;
+      list.appendChild(row);
+    });
+  });
+}
+
+function addChore(period) {
+  const iconInput = document.getElementById('new' + period.charAt(0).toUpperCase() + period.slice(1) + 'Icon');
+  const nameInput = document.getElementById('new' + period.charAt(0).toUpperCase() + period.slice(1) + 'Name');
+  if (!nameInput.value.trim()) return;
+  state.chores[state.editingChild][period].push({
+    icon: iconInput.value || '📌',
+    name: nameInput.value.trim(),
+    weekdayOnly: false
+  });
+  iconInput.value = '';
+  nameInput.value = '';
+  populateEditChores();
+}
+
+function removeChore(period, index) {
+  state.chores[state.editingChild][period].splice(index, 1);
+  populateEditChores();
+}
+
+function saveChores() {
+  save();
+  renderChild('lily');
+  renderChild('rue');
+  closeModal('editChoresModal');
+}
+
+function openEditRewards(child) {
+  state.editingChild = child;
+  document.getElementById('editRewardsTitle').textContent = `🏆 ${child.toUpperCase()}'S REWARDS`;
+  populateEditRewards();
+  openModal('editRewardsModal');
+}
+
+function populateEditRewards() {
+  const child = state.editingChild;
+  const list = document.getElementById('editRewardsList');
+  list.innerHTML = '';
+  state.rewards[child].forEach((r, i) => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input value="${r.name}" onchange="state.rewards['${child}'][${i}].name=this.value">
+      <input type="number" value="${r.pts}" style="width:80px;flex:none" onchange="state.rewards['${child}'][${i}].pts=parseInt(this.value)">
+      <button class="btn-danger" onclick="removeReward(${i})">✕</button>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function addReward() {
+  const name = document.getElementById('newRewardName').value.trim();
+  const pts = parseInt(document.getElementById('newRewardPts').value) || 5;
+  if (!name) return;
+  state.rewards[state.editingChild].push({name, pts});
+  document.getElementById('newRewardName').value = '';
+  document.getElementById('newRewardPts').value = '';
+  populateEditRewards();
+}
+
+function removeReward(index) {
+  state.rewards[state.editingChild].splice(index, 1);
+  populateEditRewards();
+}
+
+function saveRewards() {
+  save();
+  renderChild('lily');
+  renderChild('rue');
+  closeModal('editRewardsModal');
+}
+
+function openAddEvent() {
+  const today = new Date();
+  document.getElementById('eventDate').value = today.toISOString().split('T')[0];
+  openModal('addEventModal');
+}
+
+function saveEvent() {
+  const date = document.getElementById('eventDate').value;
+  const text = document.getElementById('eventText').value.trim();
+  const type = document.getElementById('eventType').value;
+  if (!date || !text) return;
+  state.events.push({date, text, type});
+  document.getElementById('eventText').value = '';
+  save();
+  renderCalendar();
+  closeModal('addEventModal');
+}
+
+// ── Modal helpers ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ── Tab switching ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab-btn.${tab}`).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'cal') renderCalendar();
+}
+
+// ── INIT ──
+applyDayBackground();
+updateDateDisplay();
+renderChild('lily');
+renderChild('rue');
+renderCalendar();
+</script>
 </body>
 </html>
