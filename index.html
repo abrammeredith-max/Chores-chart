@@ -684,6 +684,13 @@
         <div class="rewards-box">
           <div class="rewards-title">🏆 REWARDS <span style="font-size:0.7rem;color:rgba(255,255,255,0.4);font-family:Nunito">pts</span></div>
           <div id="lily-rewards-list"></div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,215,0,0.2);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-family:Bangers,cursive;font-size:0.85rem;letter-spacing:1px;color:rgba(255,215,0,0.6);">📜 CLAIMED</span>
+              <button class="edit-btn" onclick="resetClaimHistory('lily')" style="font-size:0.6rem;padding:1px 6px;border-color:rgba(255,100,100,0.4);color:rgba(255,140,140,0.7);">🔄 Reset</button>
+            </div>
+            <div id="lily-claim-history"></div>
+          </div>
         </div>
       </div>
       <div class="right-col">
@@ -713,6 +720,13 @@
         <div class="rewards-box">
           <div class="rewards-title">🏆 REWARDS</div>
           <div id="rue-rewards-list"></div>
+          <div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,215,0,0.2);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-family:Bangers,cursive;font-size:0.85rem;letter-spacing:1px;color:rgba(255,215,0,0.6);">📜 CLAIMED</span>
+              <button class="edit-btn" onclick="resetClaimHistory('rue')" style="font-size:0.6rem;padding:1px 6px;border-color:rgba(255,100,100,0.4);color:rgba(255,140,140,0.7);">🔄 Reset</button>
+            </div>
+            <div id="rue-claim-history"></div>
+          </div>
         </div>
       </div>
       <div class="right-col">
@@ -937,6 +951,7 @@ let state = {
   checked:  {},
   events:   [],
   starBank: { lily: 0, rue: 0 },
+  claimHistory: { lily: [], rue: [] },
   selectedDay: { lily: getTodayIndex(), rue: getTodayIndex() },
   calMonth: new Date().getMonth(),
   calYear:  new Date().getFullYear(),
@@ -954,10 +969,15 @@ async function saveSection(section) {
   setSyncStatus(true);
   try {
     let val = state[section];
-    // Firebase can't store undefined or undefined-keyed arrays well;
-    // events is an array — store as object with numeric keys, re-hydrate on read
+    // Firebase can't store plain arrays well — convert to indexed objects
     if (section === 'events') {
       val = state.events.reduce((acc, ev, i) => { acc[i] = ev; return acc; }, {});
+    }
+    if (section === 'claimHistory') {
+      val = {
+        lily: (state.claimHistory.lily || []).reduce((acc, h, i) => { acc[i] = h; return acc; }, {}),
+        rue:  (state.claimHistory.rue  || []).reduce((acc, h, i) => { acc[i] = h; return acc; }, {})
+      };
     }
     await dbSet(section, val);
   } catch(e) {
@@ -1067,16 +1087,28 @@ function renderChores(child) {
 function renderRewards(child) {
   const list = document.getElementById(child + '-rewards-list');
   list.innerHTML = '';
-  const avail = state.starBank[child];
-  state.rewards[child].forEach((r, i) => {
+  const avail = state.starBank[child] || 0;
+  (state.rewards[child] || []).forEach((r, i) => {
     const canAfford = avail >= r.pts;
     const item = document.createElement('div');
     item.className = 'reward-item';
-    item.innerHTML = `
-      <span>${r.name}</span>
-      <span class="reward-pts">⭐${r.pts}</span>
-      <button class="claim-btn" ${canAfford ? '' : 'disabled'} onclick="claimReward('${child}', ${i}, event)">CLAIM</button>
-    `;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = r.name;
+
+    const ptsSpan = document.createElement('span');
+    ptsSpan.className = 'reward-pts';
+    ptsSpan.textContent = '\u2b50' + r.pts;
+
+    const claimBtn = document.createElement('button');
+    claimBtn.className = 'claim-btn';
+    claimBtn.textContent = 'CLAIM';
+    claimBtn.disabled = !canAfford;
+    claimBtn.addEventListener('click', (e) => claimReward(child, i, e));
+
+    item.appendChild(nameSpan);
+    item.appendChild(ptsSpan);
+    item.appendChild(claimBtn);
     list.appendChild(item);
   });
 }
@@ -1129,9 +1161,17 @@ function spawnSparkle(e) {
 
 function claimReward(child, rewardIndex, e) {
   const reward = state.rewards[child][rewardIndex];
-  if (state.starBank[child] < reward.pts) return;
-  state.starBank[child] -= reward.pts;
+  if (!reward || (state.starBank[child] || 0) < reward.pts) return;
+  state.starBank[child] = (state.starBank[child] || 0) - reward.pts;
+  // Record in claim history
+  if (!state.claimHistory[child]) state.claimHistory[child] = [];
+  state.claimHistory[child].push({
+    name: reward.name,
+    pts: reward.pts,
+    date: new Date().toLocaleDateString('en-GB')
+  });
   saveSection('starBank');
+  saveSection('claimHistory');
   // Big celebration sparkles
   for (let i = 0; i < 15; i++) {
     const el = document.createElement('div');
@@ -1143,7 +1183,40 @@ function claimReward(child, rewardIndex, e) {
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1200);
   }
-  showToast(`🏆 ${child.charAt(0).toUpperCase()+child.slice(1)} claimed: ${reward.name}! (-${reward.pts}⭐)`);
+  showToast('🏆 ' + child.charAt(0).toUpperCase()+child.slice(1) + ' claimed: ' + reward.name + '! (-' + reward.pts + '⭐)');
+}
+
+function resetClaimHistory(child) {
+  if (!confirm('Reset all claimed rewards for ' + child.charAt(0).toUpperCase()+child.slice(1) + '?')) return;
+  state.claimHistory[child] = [];
+  saveSection('claimHistory');
+  showToast('🔄 Claimed rewards reset for ' + child.charAt(0).toUpperCase()+child.slice(1));
+}
+
+function renderClaimHistory(child) {
+  const el = document.getElementById(child + '-claim-history');
+  if (!el) return;
+  const history = (state.claimHistory && state.claimHistory[child]) ? state.claimHistory[child] : [];
+  if (history.length === 0) {
+    el.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:0.72rem;font-style:italic;padding:4px 0;">No rewards claimed yet</div>';
+    return;
+  }
+  el.innerHTML = '';
+  // Show most recent first, max 5
+  [...history].reverse().slice(0, 5).forEach(h => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.06);';
+    row.innerHTML = '<span style="font-size:0.7rem;color:rgba(255,215,0,0.8);flex:1;">' + h.name + '</span>'
+      + '<span style="font-size:0.68rem;color:rgba(255,255,255,0.3);">' + h.date + '</span>'
+      + '<span style="font-family:Bangers,cursive;color:#ff9090;font-size:0.85rem;">-' + h.pts + '⭐</span>';
+    el.appendChild(row);
+  });
+  if (history.length > 5) {
+    const more = document.createElement('div');
+    more.style.cssText = 'font-size:0.65rem;color:rgba(255,255,255,0.25);text-align:right;padding-top:2px;';
+    more.textContent = '+ ' + (history.length - 5) + ' more';
+    el.appendChild(more);
+  }
 }
 
 function showToast(msg) {
@@ -1267,14 +1340,34 @@ function populateEditChores() {
     state.chores[child][period].forEach((c, i) => {
       const row = document.createElement('div');
       row.className = 'edit-row';
-      row.innerHTML = `
-        <input value="${c.icon}" style="width:60px;flex:none" onchange="state.chores['${child}']['${period}'][${i}].icon=this.value">
-        <input value="${c.name}" onchange="state.chores['${child}']['${period}'][${i}].name=this.value">
-        <label style="color:rgba(255,255,255,0.5);font-size:0.75rem;white-space:nowrap">
-          <input type="checkbox" ${c.weekdayOnly?'checked':''} onchange="state.chores['${child}']['${period}'][${i}].weekdayOnly=this.checked"> School days only
-        </label>
-        <button class="btn-danger" onclick="removeChore('${period}',${i})">✕</button>
-      `;
+
+      const iconInput = document.createElement('input');
+      iconInput.value = c.icon;
+      iconInput.style.cssText = 'width:60px;flex:none';
+      iconInput.addEventListener('change', () => { state.chores[child][period][i].icon = iconInput.value; });
+
+      const nameInput = document.createElement('input');
+      nameInput.value = c.name;
+      nameInput.addEventListener('change', () => { state.chores[child][period][i].name = nameInput.value; });
+
+      const label = document.createElement('label');
+      label.style.cssText = 'color:rgba(255,255,255,0.5);font-size:0.75rem;white-space:nowrap;display:flex;align-items:center;gap:4px;';
+      const cbx = document.createElement('input');
+      cbx.type = 'checkbox';
+      cbx.checked = !!c.weekdayOnly;
+      cbx.addEventListener('change', () => { state.chores[child][period][i].weekdayOnly = cbx.checked; });
+      label.appendChild(cbx);
+      label.appendChild(document.createTextNode(' School days only'));
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-danger';
+      delBtn.textContent = '✕';
+      delBtn.addEventListener('click', () => removeChore(period, i));
+
+      row.appendChild(iconInput);
+      row.appendChild(nameInput);
+      row.appendChild(label);
+      row.appendChild(delBtn);
       list.appendChild(row);
     });
   });
@@ -1315,14 +1408,28 @@ function populateEditRewards() {
   const child = state.editingChild;
   const list = document.getElementById('editRewardsList');
   list.innerHTML = '';
-  state.rewards[child].forEach((r, i) => {
+  (state.rewards[child] || []).forEach((r, i) => {
     const row = document.createElement('div');
     row.className = 'edit-row';
-    row.innerHTML = `
-      <input value="${r.name}" onchange="state.rewards['${child}'][${i}].name=this.value">
-      <input type="number" value="${r.pts}" style="width:80px;flex:none" onchange="state.rewards['${child}'][${i}].pts=parseInt(this.value)">
-      <button class="btn-danger" onclick="removeReward(${i})">✕</button>
-    `;
+
+    const nameInput = document.createElement('input');
+    nameInput.value = r.name;
+    nameInput.addEventListener('change', () => { state.rewards[child][i].name = nameInput.value; });
+
+    const ptsInput = document.createElement('input');
+    ptsInput.type = 'number';
+    ptsInput.value = r.pts;
+    ptsInput.style.cssText = 'width:80px;flex:none';
+    ptsInput.addEventListener('change', () => { state.rewards[child][i].pts = parseInt(ptsInput.value) || 0; });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-danger';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', () => removeReward(i));
+
+    row.appendChild(nameInput);
+    row.appendChild(ptsInput);
+    row.appendChild(delBtn);
     list.appendChild(row);
   });
 }
@@ -1407,6 +1514,7 @@ async function bootstrap() {
     await dbSet('checked',  {});
     await dbSet('events',   {});
     await dbSet('starBank', { lily: 0, rue: 0 });
+    await dbSet('claimHistory', { lily: [], rue: [] });
   }
 
   // ── Real-time listeners — update state & re-render whenever Firebase changes ──
@@ -1460,6 +1568,17 @@ async function bootstrap() {
     renderRewards('lily');
     renderRewards('rue');
   });
+
+  dbOn('claimHistory', val => {
+    if (val) {
+      state.claimHistory = {
+        lily: Array.isArray(val.lily) ? val.lily : Object.values(val.lily || {}),
+        rue:  Array.isArray(val.rue)  ? val.rue  : Object.values(val.rue  || {})
+      };
+    }
+    renderClaimHistory('lily');
+    renderClaimHistory('rue');
+  });
 }
 
 // ── Expose all functions used in HTML onclick attributes ──
@@ -1480,6 +1599,8 @@ window.closeModal        = closeModal;
 window.changeMonth       = changeMonth;
 window.openResetConfirm  = openResetConfirm;
 window.confirmReset      = confirmReset;
+window.resetClaimHistory = resetClaimHistory;
+window.claimReward       = claimReward;
 
 // ── INIT ──
 applyDayBackground();
