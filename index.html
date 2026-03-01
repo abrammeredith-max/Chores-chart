@@ -644,10 +644,23 @@
 <header>
   <div class="app-title">✨ CHORE STARS ✨</div>
   <div class="header-right">
+    <span id="syncStatus" style="font-family:'Permanent Marker',cursive;font-size:0.7rem;color:rgba(100,255,150,0.8);transition:opacity 0.5s;opacity:0;"></span>
     <div class="date-display" id="dateDisplay"></div>
     <button class="reset-btn" onclick="openResetConfirm()">🔄 New Week</button>
   </div>
 </header>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" style="position:fixed;inset:0;z-index:999;background:rgba(10,10,30,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="font-family:'Bangers',cursive;font-size:3rem;letter-spacing:4px;background:linear-gradient(90deg,#FFD700,#FF3CAC,#2B86C5,#FFD700);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 2s linear infinite;">✨ CHORE STARS ✨</div>
+  <div style="font-family:'Permanent Marker',cursive;color:rgba(255,255,255,0.6);font-size:1rem;">Connecting to Firebase…</div>
+  <div style="width:60px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+    <div style="height:100%;background:linear-gradient(90deg,#FFD700,#FF3CAC);animation:loadBar 1.2s ease-in-out infinite;border-radius:2px;"></div>
+  </div>
+</div>
+<style>
+@keyframes loadBar { 0%{width:0%;margin-left:0} 50%{width:100%;margin-left:0} 100%{width:0%;margin-left:100%} }
+</style>
 
 <div class="tabs">
   <button class="tab-btn lily active" onclick="switchTab('lily')">🌸 LILY</button>
@@ -820,14 +833,48 @@
   </div>
 </div>
 
-<script>
+<script type="module">
 // ═══════════════════════════════════════════
-// DATA
+// FIREBASE SETUP
+// ═══════════════════════════════════════════
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getDatabase, ref, set, get, onValue, update, remove }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDZXfG1uE39ituMY8xD8PYjZdFFG2Vc_KU",
+  authDomain: "chore-chart-54d54.firebaseapp.com",
+  projectId: "chore-chart-54d54",
+  storageBucket: "chore-chart-54d54.firebasestorage.app",
+  messagingSenderId: "341347519615",
+  appId: "1:341347519615:web:2c86fafc8b39b5306ac34a",
+  databaseURL: "https://chore-chart-54d54-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ── DB helpers ──
+const dbRef  = (path) => ref(db, path);
+const dbSet  = (path, val) => set(dbRef(path), val);
+const dbGet  = (path) => get(dbRef(path));
+const dbOn   = (path, cb) => onValue(dbRef(path), snap => cb(snap.val()));
+
+// Show a subtle "syncing" indicator
+function setSyncStatus(syncing) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = syncing ? '🔄 Saving…' : '✅ Saved';
+  el.style.opacity = '1';
+  if (!syncing) setTimeout(() => { el.style.opacity = '0'; }, 1500);
+}
+
+// ═══════════════════════════════════════════
+// DATA DEFAULTS
 // ═══════════════════════════════════════════
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-const WEEKEND = [5,6]; // index in DAYS
+const WEEKEND = [5,6];
 
-// Chores: weekdayOnly = true means hidden on weekend
 const DEFAULT_CHORES = {
   lily: {
     morning: [
@@ -883,30 +930,51 @@ const DEFAULT_REWARDS = {
   ]
 };
 
-// ── State ──
+// ── In-memory state (synced from Firebase) ──
 let state = {
-  chores: JSON.parse(localStorage.getItem('chores') || 'null') || JSON.parse(JSON.stringify(DEFAULT_CHORES)),
-  rewards: JSON.parse(localStorage.getItem('rewards') || 'null') || JSON.parse(JSON.stringify(DEFAULT_REWARDS)),
-  checked: JSON.parse(localStorage.getItem('checked') || '{}'),
-  events: JSON.parse(localStorage.getItem('events') || '[]'),
-  starBank: JSON.parse(localStorage.getItem('starBank') || '{"lily":0,"rue":0}'),
+  chores:   JSON.parse(JSON.stringify(DEFAULT_CHORES)),
+  rewards:  JSON.parse(JSON.stringify(DEFAULT_REWARDS)),
+  checked:  {},
+  events:   [],
+  starBank: { lily: 0, rue: 0 },
   selectedDay: { lily: getTodayIndex(), rue: getTodayIndex() },
   calMonth: new Date().getMonth(),
-  calYear: new Date().getFullYear(),
-  editingChild: 'lily'
+  calYear:  new Date().getFullYear(),
+  editingChild: 'lily',
+  loaded: false
 };
 
 function getTodayIndex() {
-  const d = new Date().getDay(); // 0=Sun,1=Mon...6=Sat
+  const d = new Date().getDay();
   return d === 0 ? 6 : d - 1;
 }
 
+// ── Save individual sections to Firebase ──
+async function saveSection(section) {
+  setSyncStatus(true);
+  try {
+    let val = state[section];
+    // Firebase can't store undefined or undefined-keyed arrays well;
+    // events is an array — store as object with numeric keys, re-hydrate on read
+    if (section === 'events') {
+      val = state.events.reduce((acc, ev, i) => { acc[i] = ev; return acc; }, {});
+    }
+    await dbSet(section, val);
+  } catch(e) {
+    console.error('Firebase save error:', e);
+    showToast('⚠️ Save failed — check connection');
+  } finally {
+    setSyncStatus(false);
+  }
+}
+
+// Convenience: save everything (used sparingly)
 function save() {
-  localStorage.setItem('chores', JSON.stringify(state.chores));
-  localStorage.setItem('rewards', JSON.stringify(state.rewards));
-  localStorage.setItem('checked', JSON.stringify(state.checked));
-  localStorage.setItem('events', JSON.stringify(state.events));
-  localStorage.setItem('starBank', JSON.stringify(state.starBank));
+  saveSection('chores');
+  saveSection('rewards');
+  saveSection('checked');
+  saveSection('events');
+  saveSection('starBank');
 }
 
 // ── Daily background ──
@@ -1040,10 +1108,8 @@ function toggleChore(child, dayIndex, period, choreName, e) {
   } else {
     state.starBank[child] = Math.max(0, (state.starBank[child] || 0) - 1);
   }
-  save();
-  renderChores(child);
-  renderDaySelector(child);
-  renderRewards(child);
+  saveSection('checked');
+  saveSection('starBank');
   if (!wasDone) spawnSparkle(e);
 }
 
@@ -1065,9 +1131,7 @@ function claimReward(child, rewardIndex, e) {
   const reward = state.rewards[child][rewardIndex];
   if (state.starBank[child] < reward.pts) return;
   state.starBank[child] -= reward.pts;
-  save();
-  renderRewards(child);
-  renderStarBar(child);
+  saveSection('starBank');
   // Big celebration sparkles
   for (let i = 0; i < 15; i++) {
     const el = document.createElement('div');
@@ -1095,11 +1159,8 @@ function openResetConfirm() {
 }
 
 function confirmReset() {
-  // Clear all checked chores but keep star banks and events
   state.checked = {};
-  save();
-  renderChild('lily');
-  renderChild('rue');
+  saveSection('checked');
   closeModal('resetConfirmModal');
   showToast('🔄 New week started! Chores reset for Lily & Rue.');
 }
@@ -1164,7 +1225,13 @@ function renderCalendar() {
       tag.textContent = icons[ev.type] + ' ' + ev.text;
       tag.title = 'Click to delete';
       const evRef = ev;
-      tag.onclick = (e) => { e.stopPropagation(); if(confirm('Delete "'+evRef.text+'"?')) { state.events = state.events.filter(x=>x!==evRef); save(); renderCalendar(); } };
+      tag.onclick = (e) => { 
+        e.stopPropagation(); 
+        if(confirm('Delete "'+evRef.text+'"?')) { 
+          state.events = state.events.filter(x=>x!==evRef); 
+          saveSection('events');
+        } 
+      };
       cell.appendChild(tag);
     });
 
@@ -1233,9 +1300,7 @@ function removeChore(period, index) {
 }
 
 function saveChores() {
-  save();
-  renderChild('lily');
-  renderChild('rue');
+  saveSection('chores');
   closeModal('editChoresModal');
 }
 
@@ -1278,9 +1343,7 @@ function removeReward(index) {
 }
 
 function saveRewards() {
-  save();
-  renderChild('lily');
-  renderChild('rue');
+  saveSection('rewards');
   closeModal('editRewardsModal');
 }
 
@@ -1297,8 +1360,7 @@ function saveEvent() {
   if (!date || !text) return;
   state.events.push({date, text, type});
   document.getElementById('eventText').value = '';
-  save();
-  renderCalendar();
+  saveSection('events');
   closeModal('addEventModal');
 }
 
@@ -1322,12 +1384,107 @@ function switchTab(tab) {
   if (tab === 'cal') renderCalendar();
 }
 
+// Expose tab switch globally (called from onclick in HTML)
+
+// ═══════════════════════════════════════════
+// FIREBASE REAL-TIME LISTENERS + BOOTSTRAP
+// ═══════════════════════════════════════════
+
+// Show loading overlay until data arrives
+function showLoading(show) {
+  document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+}
+
+async function bootstrap() {
+  showLoading(true);
+
+  // Check if DB has data; if not, write defaults
+  const snap = await dbGet('chores');
+  if (!snap.exists()) {
+    // First run — seed the database with defaults
+    await dbSet('chores',   DEFAULT_CHORES);
+    await dbSet('rewards',  DEFAULT_REWARDS);
+    await dbSet('checked',  {});
+    await dbSet('events',   {});
+    await dbSet('starBank', { lily: 0, rue: 0 });
+  }
+
+  // ── Real-time listeners — update state & re-render whenever Firebase changes ──
+
+  dbOn('chores', val => {
+    if (val) {
+      state.chores = val;
+      // Firebase stores arrays as objects with numeric keys — normalise
+      ['lily','rue'].forEach(child => {
+        ['morning','afternoon'].forEach(period => {
+          if (state.chores[child] && state.chores[child][period]) {
+            state.chores[child][period] = Object.values(state.chores[child][period]);
+          }
+        });
+      });
+    }
+    renderChild('lily');
+    renderChild('rue');
+    showLoading(false);
+  });
+
+  dbOn('rewards', val => {
+    if (val) {
+      state.rewards = val;
+      ['lily','rue'].forEach(child => {
+        if (state.rewards[child]) {
+          state.rewards[child] = Object.values(state.rewards[child]);
+        }
+      });
+    }
+    renderChild('lily');
+    renderChild('rue');
+  });
+
+  dbOn('checked', val => {
+    state.checked = val || {};
+    renderChild('lily');
+    renderChild('rue');
+  });
+
+  dbOn('events', val => {
+    // Re-hydrate from Firebase object → array
+    state.events = val ? Object.values(val) : [];
+    renderCalendar();
+  });
+
+  dbOn('starBank', val => {
+    state.starBank = val || { lily: 0, rue: 0 };
+    renderStarBar('lily');
+    renderStarBar('rue');
+    renderRewards('lily');
+    renderRewards('rue');
+  });
+}
+
+// ── Expose all functions used in HTML onclick attributes ──
+// (required because this is a type="module" script)
+window.switchTab         = switchTab;
+window.openEditChores    = openEditChores;
+window.openEditRewards   = openEditRewards;
+window.addChore          = addChore;
+window.removeChore       = removeChore;
+window.saveChores        = saveChores;
+window.addReward         = addReward;
+window.removeReward      = removeReward;
+window.saveRewards       = saveRewards;
+window.openAddEvent      = openAddEvent;
+window.saveEvent         = saveEvent;
+window.openModal         = openModal;
+window.closeModal        = closeModal;
+window.changeMonth       = changeMonth;
+window.openResetConfirm  = openResetConfirm;
+window.confirmReset      = confirmReset;
+
 // ── INIT ──
 applyDayBackground();
 updateDateDisplay();
-renderChild('lily');
-renderChild('rue');
-renderCalendar();
+bootstrap();
 </script>
 </body>
 </html>
